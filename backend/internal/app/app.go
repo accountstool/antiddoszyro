@@ -56,6 +56,14 @@ func Run(ctx context.Context, logger *slog.Logger) error {
 	sslService := services.NewSSLService(repo, cfg, auditService, domainService)
 	protectionEngine := protection.NewEngine(repo, logger, cfg, sink)
 
+	if domainsList, _, err := repo.ListDomains(ctx, 1000, 0, ""); err != nil {
+		logger.Error("load domains for startup nginx sync", "error", err)
+	} else if err := nginxManager.Sync(ctx, domainsList); err != nil {
+		logger.Error("startup nginx sync failed", "error", err)
+	} else {
+		logger.Info("startup nginx sync completed", "domains", len(domainsList))
+	}
+
 	api := handlers.NewAPI(cfg, repo, authService, auditService, dashboardService, domainService, settingsService, usersService, ipControlService, logsService, sslService, protectionEngine, sink)
 	engine := router.New(api, cfg.Server.FrontendDistDir, middleware.RequireAuth(authService), middleware.RequireCSRF(authService))
 
