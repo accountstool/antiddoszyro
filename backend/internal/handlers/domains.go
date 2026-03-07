@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
 	"shieldpanel/backend/internal/domain"
+	"shieldpanel/backend/internal/services"
 	"shieldpanel/backend/internal/store"
 	"shieldpanel/backend/internal/util"
 )
@@ -96,6 +98,10 @@ func (a *API) CreateDomain(c *gin.Context) {
 		Notes:              payload.Notes,
 	}, mapDomainRules(payload.Rules), c.ClientIP(), c.Request.UserAgent())
 	if err != nil {
+		if errors.Is(err, services.ErrDomainExists) {
+			util.AbortError(c, http.StatusConflict, "domain already exists")
+			return
+		}
 		util.AbortError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -135,6 +141,10 @@ func (a *API) UpdateDomain(c *gin.Context) {
 		Notes:              payload.Notes,
 	}, mapDomainRules(payload.Rules), c.ClientIP(), c.Request.UserAgent())
 	if err != nil {
+		if errors.Is(err, services.ErrDomainExists) {
+			util.AbortError(c, http.StatusConflict, "domain already exists")
+			return
+		}
 		util.AbortError(c, http.StatusInternalServerError, err.Error())
 		return
 	}

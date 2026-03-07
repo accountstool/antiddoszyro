@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
-import { api, unwrap } from "../api/client";
+import { api, getApiErrorMessage, unwrap } from "../api/client";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
@@ -98,7 +98,14 @@ export function DomainsPage() {
       setEditing(emptyForm);
       void queryClient.invalidateQueries({ queryKey: ["domains"] });
     },
-    onError: () => toast.error(t("messages.requestFailed"))
+    onError: (error) => {
+      const message = getApiErrorMessage(error);
+      if (message === "domain already exists") {
+        toast.error(t("domains.domainExists"));
+        return;
+      }
+      toast.error(message ?? t("messages.requestFailed"));
+    }
   });
 
   const deleteMutation = useMutation({

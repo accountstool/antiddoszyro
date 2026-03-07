@@ -76,6 +76,7 @@
     "subtitle": "Manage origins, SSL, challenge modes, and per-domain rules.",
     "add": "Add domain",
     "edit": "Edit domain",
+    "domainExists": "This domain already exists. Edit the existing record instead.",
     "sslDomains": "SSL domains",
     "domain": "Domain",
     "origin": "Origin",

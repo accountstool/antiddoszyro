@@ -76,6 +76,7 @@
     "subtitle": "Quan ly origin, SSL, che do challenge va rule tung domain.",
     "add": "Them domain",
     "edit": "Sua domain",
+    "domainExists": "Domain nay da ton tai. Hay sua ban ghi dang co thay vi tao moi.",
     "sslDomains": "Domain bat SSL",
     "domain": "Domain",
     "origin": "Origin",

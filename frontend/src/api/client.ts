@@ -25,3 +25,16 @@ export async function unwrap<T>(request: Promise<{ data: { data: T } }>): Promis
   const response = await request;
   return response.data.data;
 }
+
+export function getApiErrorMessage(error: unknown): string | null {
+  if (axios.isAxiosError(error)) {
+    const message = error.response?.data?.message;
+    if (typeof message === "string" && message.trim() !== "") {
+      return message;
+    }
+  }
+  if (error instanceof Error && error.message.trim() !== "") {
+    return error.message;
+  }
+  return null;
+}

@@ -3,9 +3,11 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"log/slog"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 
 	"shieldpanel/backend/internal/domain"
 	"shieldpanel/backend/internal/nginx"
@@ -57,6 +59,9 @@ func (s *DomainService) Get(ctx context.Context, id uuid.UUID) (DomainDetail, er
 func (s *DomainService) Create(ctx context.Context, actor *domain.User, input store.DomainInput, rules []store.DomainRuleInput, ipAddress string, userAgent string) (domain.Domain, error) {
 	item, err := s.store.CreateDomain(ctx, input)
 	if err != nil {
+		if isDuplicateDomainError(err) {
+			return domain.Domain{}, ErrDomainExists
+		}
 		return domain.Domain{}, err
 	}
 	if err := s.store.ReplaceDomainRules(ctx, item.ID, rules); err != nil {
@@ -73,6 +78,9 @@ func (s *DomainService) Create(ctx context.Context, actor *domain.User, input st
 func (s *DomainService) Update(ctx context.Context, actor *domain.User, id uuid.UUID, input store.DomainInput, rules []store.DomainRuleInput, ipAddress string, userAgent string) (domain.Domain, error) {
 	item, err := s.store.UpdateDomain(ctx, id, input)
 	if err != nil {
+		if isDuplicateDomainError(err) {
+			return domain.Domain{}, ErrDomainExists
+		}
 		return domain.Domain{}, err
 	}
 	if err := s.store.ReplaceDomainRules(ctx, id, rules); err != nil {
@@ -115,4 +123,12 @@ func (s *DomainService) syncNginx(ctx context.Context) error {
 		return err
 	}
 	return s.nginx.Sync(ctx, domainsList)
+}
+
+func isDuplicateDomainError(err error) bool {
+	var pgErr *pgconn.PgError
+	if !errors.As(err, &pgErr) {
+		return false
+	}
+	return pgErr.Code == "23505" && pgErr.ConstraintName == "domains_name_key"
 }
