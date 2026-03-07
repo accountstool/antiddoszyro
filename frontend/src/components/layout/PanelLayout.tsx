@@ -112,7 +112,7 @@ export function PanelLayout({ children }: { children: ReactNode }) {
                 <div className="flex flex-wrap items-center gap-3">
                   <Select className="min-w-[154px]" value={language} onChange={(event) => setLanguage(event.target.value)}>
                     <option value="en">English</option>
-                    <option value="vi">Tieng Viet</option>
+                    <option value="vi">Tiếng Việt</option>
                   </Select>
                   <Button variant="secondary" onClick={toggleTheme}>
                     {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}

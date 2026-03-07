@@ -170,7 +170,7 @@ export function UsersPage() {
           <Field label={t("users.language")}>
             <Select value={form.language} onChange={(event) => setForm((current) => ({ ...current, language: event.target.value }))}>
               <option value="en">English</option>
-              <option value="vi">Tieng Viet</option>
+              <option value="vi">Tiếng Việt</option>
             </Select>
           </Field>
           <Field label={t("users.password")}>

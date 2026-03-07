@@ -12,10 +12,10 @@ func ChallengePage(language string, host string, originalURI string, mode string
 	buttonLabel := "Continue"
 	waitText := "Verifying your browser..."
 	if strings.HasPrefix(strings.ToLower(language), "vi") {
-		title = "Xac thuc ShieldPanel"
-		description = "Hoan tat kiem tra trinh duyet de tiep tuc."
-		buttonLabel = "Tiep tuc"
-		waitText = "Dang xac minh trinh duyet..."
+		title = "Xác thực ShieldPanel"
+		description = "Hoàn tất kiểm tra trình duyệt để tiếp tục."
+		buttonLabel = "Tiếp tục"
+		waitText = "Đang xác minh trình duyệt..."
 	}
 	autoSubmit := ""
 	if mode == "js" {
@@ -67,8 +67,8 @@ func BlockPage(language string, reason string) string {
 	title := "Request blocked"
 	description := "Your request triggered ShieldPanel protection."
 	if strings.HasPrefix(strings.ToLower(language), "vi") {
-		title = "Yeu cau bi chan"
-		description = "Yeu cau cua ban da kich hoat co che bao ve ShieldPanel."
+		title = "Yêu cầu bị chặn"
+		description = "Yêu cầu của bạn đã kích hoạt cơ chế bảo vệ ShieldPanel."
 	}
 	return fmt.Sprintf(`<!doctype html>
 <html lang="%s"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">

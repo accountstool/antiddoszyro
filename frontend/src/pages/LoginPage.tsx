@@ -38,7 +38,7 @@ export function LoginPage() {
       <div className="mx-auto flex w-full max-w-7xl justify-end gap-3 pb-5">
         <Select className="w-[154px]" value={language} onChange={(event) => setLanguage(event.target.value)}>
           <option value="en">English</option>
-          <option value="vi">Tieng Viet</option>
+          <option value="vi">Tiếng Việt</option>
         </Select>
         <Button variant="secondary" onClick={toggleTheme}>
           {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
