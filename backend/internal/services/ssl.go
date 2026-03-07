@@ -45,6 +45,9 @@ func (s *SSLService) Issue(ctx context.Context, actor *domain.User, domainID uui
 	if err := s.store.UpsertSSLCertificate(ctx, item.ID, "Let's Encrypt", "issued", certPath, keyPath, nil, &now); err != nil {
 		return err
 	}
+	if err := s.store.SetDomainSSLEnabled(ctx, item.ID, true); err != nil {
+		return err
+	}
 	s.audit.Record(ctx, actor, "issue_ssl", "domain", item.ID.String(), ipAddress, userAgent, item.Name)
 	return s.domains.Sync(ctx, actor, ipAddress, userAgent)
 }
@@ -62,6 +65,9 @@ func (s *SSLService) Renew(ctx context.Context, actor *domain.User, domainID uui
 	certPath := filepath.Join("/etc/letsencrypt/live", item.Name, "fullchain.pem")
 	keyPath := filepath.Join("/etc/letsencrypt/live", item.Name, "privkey.pem")
 	if err := s.store.UpsertSSLCertificate(ctx, item.ID, "Let's Encrypt", "renewed", certPath, keyPath, nil, &now); err != nil {
+		return err
+	}
+	if err := s.store.SetDomainSSLEnabled(ctx, item.ID, true); err != nil {
 		return err
 	}
 	s.audit.Record(ctx, actor, "renew_ssl", "domain", item.ID.String(), ipAddress, userAgent, item.Name)

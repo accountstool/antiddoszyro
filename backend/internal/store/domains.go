@@ -149,6 +149,16 @@ func (s *Store) DeleteDomain(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+func (s *Store) SetDomainSSLEnabled(ctx context.Context, id uuid.UUID, enabled bool) error {
+	_, err := s.db.Exec(ctx, `
+		update domains
+		set ssl_enabled=$2,
+			updated_at=now()
+		where id=$1
+	`, id, enabled)
+	return err
+}
+
 func (s *Store) ListDomainRules(ctx context.Context, domainID uuid.UUID) ([]domain.DomainRule, error) {
 	rows, err := s.db.Query(ctx, `
 		select id, domain_id, name, type, pattern, action, enabled, priority, created_at, updated_at
