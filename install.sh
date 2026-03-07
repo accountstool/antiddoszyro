@@ -57,7 +57,8 @@ ensure_user() {
 }
 
 prepare_paths() {
-  mkdir -p "${APP_ROOT}" "${APP_ROOT}/bin" "${ENV_DIR}" /var/log/shieldpanel /var/www/shieldpanel/acme /etc/nginx/sites-available/shieldpanel /etc/nginx/sites-enabled/shieldpanel
+  mkdir -p "${APP_ROOT}" "${APP_ROOT}/bin" "${ENV_DIR}" /var/log/shieldpanel /var/www/shieldpanel/acme /etc/nginx/shieldpanel/sites-available /etc/nginx/shieldpanel/sites-enabled
+  rm -rf /etc/nginx/sites-enabled/shieldpanel
   chown -R "${APP_USER}:${APP_GROUP}" /var/log/shieldpanel /var/www/shieldpanel
 }
 

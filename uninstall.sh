@@ -18,7 +18,7 @@ systemctl daemon-reload
 
 rm -rf "${APP_ROOT}" "${ENV_DIR}"
 rm -f /etc/nginx/conf.d/shieldpanel-http.conf /etc/nginx/conf.d/shieldpanel-zones.conf
-rm -rf /etc/nginx/sites-available/shieldpanel /etc/nginx/sites-enabled/shieldpanel
+rm -rf /etc/nginx/shieldpanel /etc/nginx/sites-enabled/shieldpanel
 systemctl reload nginx || true
 
 if [[ "${DROP_DATABASE}" == "true" ]]; then

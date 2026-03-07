@@ -116,8 +116,8 @@ Default seeded admin credentials:
 
 - Base include: `/etc/nginx/conf.d/shieldpanel-http.conf`
 - Generated zones: `/etc/nginx/conf.d/shieldpanel-zones.conf`
-- Generated domain files: `/etc/nginx/sites-available/shieldpanel/*.conf`
-- Enabled domain files: `/etc/nginx/sites-enabled/shieldpanel/*.conf`
+- Generated domain files: `/etc/nginx/shieldpanel/sites-available/*.conf`
+- Enabled domain files: `/etc/nginx/shieldpanel/sites-enabled/*.conf`
 
 ShieldPanel writes configs, runs `nginx -t`, and only reloads Nginx when validation passes.
 
