@@ -182,13 +182,13 @@ export function DomainsPage() {
                   <TD>{item.sslEnabled ? t("common.on") : t("common.off")}</TD>
                   <TD>{formatDate(item.updatedAt)}</TD>
                   <TD className="space-x-2 whitespace-nowrap">
-                    <Link className="inline-flex rounded-full bg-teal-50 px-3 py-1.5 text-sm font-semibold text-teal-700 dark:bg-teal-950/35 dark:text-teal-200" to={`/domains/${item.id}`}>
+                    <Link className="inline-flex rounded-full bg-black px-3 py-1.5 text-sm font-semibold text-white dark:bg-white dark:text-black" to={`/domains/${item.id}`}>
                       {t("actions.view")}
                     </Link>
                     <button className="inline-flex rounded-full bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-700 dark:bg-slate-900 dark:text-slate-200" onClick={() => void openEdit(item)}>
                       {t("actions.edit")}
                     </button>
-                    <button className="inline-flex rounded-full bg-orange-50 px-3 py-1.5 text-sm font-semibold text-orange-700 dark:bg-orange-950/30 dark:text-orange-200" onClick={() => deleteMutation.mutate(item.id)}>
+                    <button className="inline-flex rounded-full bg-neutral-800 px-3 py-1.5 text-sm font-semibold text-white dark:bg-neutral-200 dark:text-black" onClick={() => deleteMutation.mutate(item.id)}>
                       {t("actions.delete")}
                     </button>
                   </TD>
@@ -248,7 +248,7 @@ export function DomainsPage() {
           </Field>
           <Field className="md:col-span-2" label={t("domains.rulesJson")}>
             <textarea
-              className="min-h-48 w-full rounded-2xl border border-white/80 bg-white/72 px-4 py-3 text-sm text-slate-900 shadow-sm shadow-slate-900/5 outline-none transition focus:border-teal-300 focus:bg-white focus:ring-4 focus:ring-teal-500/12 dark:border-slate-800 dark:bg-slate-950/78 dark:text-slate-100 dark:focus:border-teal-700 dark:focus:bg-slate-950"
+              className="min-h-48 w-full rounded-2xl border border-black/12 bg-white/78 px-4 py-3 text-sm text-slate-900 shadow-sm shadow-black/5 outline-none transition focus:border-black/40 focus:bg-white focus:ring-4 focus:ring-black/8 dark:border-white/10 dark:bg-neutral-950/82 dark:text-slate-100 dark:focus:border-white/28 dark:focus:bg-neutral-950"
               value={editing.rulesText}
               onChange={(event) => setEditing((current) => ({ ...current, rulesText: event.target.value }))}
             />
@@ -270,7 +270,7 @@ export function DomainsPage() {
             ].map(([field, label]) => (
               <label key={field} className="flex items-center gap-2">
                 <input
-                  className="h-4 w-4 accent-teal-600"
+                  className="h-4 w-4 accent-black dark:accent-white"
                   checked={Boolean(editing[field as keyof DomainForm])}
                   onChange={(event) => setEditing((current) => ({ ...current, [field]: event.target.checked }))}
                   type="checkbox"

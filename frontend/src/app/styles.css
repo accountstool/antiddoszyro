@@ -6,34 +6,34 @@
 
 :root {
   color-scheme: light;
-  --bg: 242 247 249;
+  --bg: 245 245 244;
   --bg-elevated: 255 255 255;
-  --bg-panel: 249 251 252;
-  --fg: 10 19 33;
-  --muted: 91 105 128;
-  --border: 210 219 229;
-  --accent: 13 148 136;
-  --accent-strong: 8 104 93;
-  --accent-soft: 209 250 244;
-  --danger: 194 65 12;
-  --danger-soft: 255 237 213;
-  --ring: 15 118 110;
+  --bg-panel: 250 250 249;
+  --fg: 15 15 15;
+  --muted: 97 97 97;
+  --border: 214 214 214;
+  --accent: 17 17 17;
+  --accent-strong: 0 0 0;
+  --accent-soft: 238 238 238;
+  --danger: 38 38 38;
+  --danger-soft: 229 229 229;
+  --ring: 17 17 17;
 }
 
 .theme-dark {
   color-scheme: dark;
-  --bg: 6 13 23;
-  --bg-elevated: 10 20 34;
-  --bg-panel: 16 28 45;
-  --fg: 234 241 248;
-  --muted: 142 160 183;
-  --border: 42 60 85;
-  --accent: 45 212 191;
-  --accent-strong: 20 184 166;
-  --accent-soft: 11 72 66;
-  --danger: 251 146 60;
-  --danger-soft: 95 39 13;
-  --ring: 45 212 191;
+  --bg: 5 5 5;
+  --bg-elevated: 13 13 13;
+  --bg-panel: 18 18 18;
+  --fg: 244 244 245;
+  --muted: 163 163 163;
+  --border: 56 56 56;
+  --accent: 229 229 229;
+  --accent-strong: 255 255 255;
+  --accent-soft: 38 38 38;
+  --danger: 212 212 212;
+  --danger-soft: 38 38 38;
+  --ring: 212 212 212;
 }
 
 html,
@@ -47,9 +47,9 @@ body {
   font-family: "Manrope", sans-serif;
   letter-spacing: -0.01em;
   background:
-    radial-gradient(circle at 0% 0%, rgba(13, 148, 136, 0.14), transparent 30%),
-    radial-gradient(circle at 100% 0%, rgba(249, 115, 22, 0.1), transparent 24%),
-    radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.08), transparent 26%),
+    radial-gradient(circle at 0% 0%, rgba(0, 0, 0, 0.08), transparent 28%),
+    radial-gradient(circle at 100% 0%, rgba(0, 0, 0, 0.06), transparent 22%),
+    radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.05), transparent 26%),
     rgb(var(--bg));
   color: rgb(var(--fg));
   overflow-x: hidden;
@@ -61,14 +61,14 @@ body::before {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 18%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent 20%, transparent 80%, rgba(255, 255, 255, 0.05));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 18%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.03));
   mix-blend-mode: soft-light;
-  opacity: 0.65;
+  opacity: 0.48;
 }
 
 .theme-dark body::before {
-  opacity: 0.32;
+  opacity: 0.18;
 }
 
 * {
@@ -92,7 +92,7 @@ a {
 .panel-scroll::-webkit-scrollbar-thumb {
   border-radius: 999px;
   border: 3px solid transparent;
-  background: linear-gradient(180deg, rgba(var(--accent), 0.55), rgba(var(--muted), 0.45));
+  background: linear-gradient(180deg, rgba(var(--accent), 0.72), rgba(var(--muted), 0.42));
   background-clip: padding-box;
 }
 
@@ -114,7 +114,7 @@ a {
   border-radius: 999px;
   transform: translateY(-50%);
   background: rgba(var(--accent), 0.9);
-  box-shadow: 0 0 0 6px rgba(var(--accent), 0.12);
+  box-shadow: 0 0 0 6px rgba(var(--accent), 0.08);
 }
 
 .panel-grid-overlay {

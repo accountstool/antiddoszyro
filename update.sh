@@ -26,12 +26,15 @@ rsync -a --delete \
 migrate_env_file
 
 pushd "${APP_ROOT}/frontend" >/dev/null
+echo "[ShieldPanel] Installing frontend dependencies..."
 npm install
+echo "[ShieldPanel] Building frontend bundle..."
 npm run build
 popd >/dev/null
 
 export PATH="/usr/local/go/bin:${PATH}"
 pushd "${APP_ROOT}/backend" >/dev/null
+echo "[ShieldPanel] Building backend binaries..."
 go mod tidy
 go build -o "${APP_ROOT}/bin/shieldpanel" ./cmd/server
 go build -o "${APP_ROOT}/bin/shieldpanel-migrate" ./cmd/migrate
@@ -40,6 +43,7 @@ popd >/dev/null
 set -a
 source "${ENV_FILE}"
 set +a
+echo "[ShieldPanel] Running database migrations..."
 "${APP_ROOT}/bin/shieldpanel-migrate"
 systemctl restart shieldpanel.service
 echo "ShieldPanel updated."

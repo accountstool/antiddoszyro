@@ -100,7 +100,7 @@ export function IPControlPage() {
                 <TD>{item.reason || "-"}</TD>
                 <TD>{formatDate(item.createdAt)}</TD>
                 <TD>
-                  <button className="inline-flex rounded-full bg-orange-50 px-3 py-1.5 text-sm font-semibold text-orange-700 dark:bg-orange-950/30 dark:text-orange-200" onClick={() => deleteMutation.mutate(item.id)}>
+                  <button className="inline-flex rounded-full bg-neutral-800 px-3 py-1.5 text-sm font-semibold text-white dark:bg-neutral-200 dark:text-black" onClick={() => deleteMutation.mutate(item.id)}>
                     {t("actions.delete")}
                   </button>
                 </TD>

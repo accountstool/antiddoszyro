@@ -2,7 +2,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 import type { RankedMetric } from "../../types/api";
 
-const colors = ["#0f766e", "#c2410c", "#0369a1", "#7c3aed", "#475569", "#e11d48"];
+const colors = ["#111111", "#404040", "#6b7280", "#a1a1aa", "#d4d4d8", "#52525b"];
 
 export function ReasonsChart({ data }: { data: RankedMetric[] }) {
   return (

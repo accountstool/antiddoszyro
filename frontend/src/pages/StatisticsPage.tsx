@@ -77,7 +77,7 @@ export function StatisticsPage() {
       </PageHeader>
 
       {hasError ? (
-        <Card className="border-amber-300/70 bg-amber-50/80 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100">
+        <Card className="border-black/12 bg-neutral-100/80 text-neutral-900 dark:border-white/10 dark:bg-neutral-900/80 dark:text-neutral-100">
           <h2 className="text-lg font-bold">{t("messages.requestFailed")}</h2>
           <p className="mt-1 text-sm opacity-80">{t("messages.statsUnavailable")}</p>
         </Card>

@@ -11,17 +11,17 @@ export function StatCard({
 }) {
   const toneClass =
     tone === "orange"
-      ? "from-orange-100/90 via-orange-50/75 to-white dark:from-orange-950/35 dark:via-orange-950/15 dark:to-slate-950"
+      ? "from-neutral-200/85 via-neutral-100/78 to-white dark:from-neutral-800/85 dark:via-neutral-900/78 dark:to-black"
       : tone === "slate"
-        ? "from-slate-100/95 via-slate-50/70 to-white dark:from-slate-900 dark:via-slate-950/70 dark:to-slate-950"
-        : "from-teal-100/90 via-cyan-50/70 to-white dark:from-teal-950/30 dark:via-slate-950/80 dark:to-slate-950";
+        ? "from-zinc-100/95 via-zinc-50/70 to-white dark:from-zinc-900/88 dark:via-black dark:to-black"
+        : "from-white via-neutral-100/75 to-neutral-50 dark:from-neutral-900/94 dark:via-neutral-950 dark:to-black";
 
   const orbClass =
     tone === "orange"
-      ? "bg-orange-500/15 text-orange-700 dark:bg-orange-400/15 dark:text-orange-200"
+      ? "bg-black/10 text-black dark:bg-white/10 dark:text-white"
       : tone === "slate"
-        ? "bg-slate-500/15 text-slate-700 dark:bg-slate-400/15 dark:text-slate-200"
-        : "bg-teal-500/15 text-teal-700 dark:bg-teal-400/15 dark:text-teal-200";
+        ? "bg-neutral-700/10 text-neutral-800 dark:bg-neutral-300/10 dark:text-neutral-200"
+        : "bg-black text-white dark:bg-white dark:text-black";
 
   return (
     <Card className={`bg-gradient-to-br ${toneClass}`}>

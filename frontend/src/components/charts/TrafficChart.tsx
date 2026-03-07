@@ -9,12 +9,12 @@ export function TrafficChart({ data }: { data: TimePoint[] }) {
         <AreaChart data={data}>
           <defs>
             <linearGradient id="allowedGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#0f766e" stopOpacity={0.5} />
-              <stop offset="95%" stopColor="#0f766e" stopOpacity={0.04} />
+              <stop offset="5%" stopColor="#111111" stopOpacity={0.42} />
+              <stop offset="95%" stopColor="#111111" stopOpacity={0.03} />
             </linearGradient>
             <linearGradient id="blockedGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#ea580c" stopOpacity={0.45} />
-              <stop offset="95%" stopColor="#ea580c" stopOpacity={0.04} />
+              <stop offset="5%" stopColor="#737373" stopOpacity={0.38} />
+              <stop offset="95%" stopColor="#737373" stopOpacity={0.04} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.16} vertical={false} />
@@ -31,8 +31,8 @@ export function TrafficChart({ data }: { data: TimePoint[] }) {
             itemStyle={{ color: "#e2e8f0" }}
             labelStyle={{ color: "#94a3b8" }}
           />
-          <Area activeDot={{ r: 4 }} strokeWidth={2.5} type="monotone" dataKey="allowed" stroke="#0f766e" fill="url(#allowedGradient)" />
-          <Area activeDot={{ r: 4 }} strokeWidth={2.5} type="monotone" dataKey="blocked" stroke="#ea580c" fill="url(#blockedGradient)" />
+          <Area activeDot={{ r: 4 }} strokeWidth={2.5} type="monotone" dataKey="allowed" stroke="#111111" fill="url(#allowedGradient)" />
+          <Area activeDot={{ r: 4 }} strokeWidth={2.5} type="monotone" dataKey="blocked" stroke="#737373" fill="url(#blockedGradient)" />
         </AreaChart>
       </ResponsiveContainer>
     </div>

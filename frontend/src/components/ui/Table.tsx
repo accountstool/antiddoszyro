@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 
 export function Table({ children }: PropsWithChildren) {
   return (
-    <div className="panel-scroll overflow-x-auto rounded-[24px] border border-white/75 bg-white/45 dark:border-slate-800/80 dark:bg-slate-950/35">
+    <div className="panel-scroll overflow-x-auto rounded-[24px] border border-black/10 bg-white/50 dark:border-white/10 dark:bg-neutral-950/40">
       <table className="min-w-full text-left text-sm">{children}</table>
     </div>
   );
