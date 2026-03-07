@@ -242,15 +242,18 @@ func (s *Store) StatsOverview(ctx context.Context, filters LogFilters) (domain.S
 		return overview, err
 	}
 
-	if err := s.db.QueryRow(ctx, `
-		select coalesce(max(c), 0), coalesce(to_char(bucket, 'YYYY-MM-DD HH24:MI:SS'), '')
+	peakErr := s.db.QueryRow(ctx, `
+		select c, to_char(bucket, 'YYYY-MM-DD HH24:MI:SS')
 		from (
 			select date_trunc('second', created_at) as bucket, count(*) as c
 			from request_logs `+where+`
 			group by bucket
+			order by c desc, bucket desc
+			limit 1
 		) t
-	`, args...).Scan(&overview.PeakRPS, &overview.PeakTime); err != nil && err != pgx.ErrNoRows {
-		return overview, err
+	`, args...).Scan(&overview.PeakRPS, &overview.PeakTime)
+	if peakErr != nil && peakErr != pgx.ErrNoRows {
+		return overview, peakErr
 	}
 
 	loadRanked := func(query string) ([]domain.RankedMetric, error) {
