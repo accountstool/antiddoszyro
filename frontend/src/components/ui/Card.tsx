@@ -5,7 +5,7 @@ export function Card({ children, className }: PropsWithChildren<{ className?: st
   return (
     <section
       className={clsx(
-        "relative overflow-hidden rounded-[28px] border border-black/8 bg-white/82 p-5 shadow-panel shadow-black/8 backdrop-blur-xl before:absolute before:inset-x-6 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-black/18 before:to-transparent dark:border-white/10 dark:bg-neutral-950/82 dark:shadow-black/28",
+        "rounded-[26px] border border-black/10 bg-white p-6 shadow-[0_18px_44px_rgba(15,15,15,0.07)] dark:border-white/10 dark:bg-neutral-950 dark:shadow-[0_18px_44px_rgba(0,0,0,0.28)]",
         className
       )}
     >

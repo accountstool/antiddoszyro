@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import clsx from "clsx";
 
 import { api, unwrap } from "../api/client";
 import { Button } from "../components/ui/Button";
@@ -10,7 +11,7 @@ import { HeaderMetric, PageHeader } from "../components/ui/PageHeader";
 import { Spinner } from "../components/ui/Spinner";
 import { Table, TBody, TD, TH, THead, TR } from "../components/ui/Table";
 import type { DomainDetail, RequestLog, StatsOverview } from "../types/api";
-import { formatDate } from "../utils/format";
+import { formatDate, formatNumber, formatPercent } from "../utils/format";
 
 const emptyDomainDetail: DomainDetail = {
   domain: {
@@ -99,6 +100,22 @@ export function DomainDetailPage() {
   const stats = statsQuery.data ?? emptyDomainStats;
   const logs = logsQuery.data ?? [];
   const hasError = detailQuery.isError || statsQuery.isError || logsQuery.isError;
+  const overviewItems = [
+    { label: t("domains.origin"), value: `${detail.domain.originHost || "-"}:${detail.domain.originPort || "-"}` },
+    { label: t("domains.protocol"), value: detail.domain.originProtocol ? detail.domain.originProtocol.toUpperCase() : "-" },
+    { label: "Nginx", value: detail.nginxStatus || "-" },
+    { label: t("domains.updatedAt"), value: formatDate(detail.domain.updatedAt) },
+    { label: t("domains.allowedMethods"), value: detail.domain.allowedMethods.length > 0 ? detail.domain.allowedMethods.join(", ") : "-" },
+    { label: t("statistics.challengePassRate"), value: formatPercent(stats.challengePassRate) }
+  ];
+  const statusPills = [
+    `${t("domains.mode")}: ${detail.domain.protectionMode || "-"}`,
+    `${t("domains.challengeMode")}: ${detail.domain.challengeMode || "-"}`,
+    `${t("domains.cloudflareMode")}: ${detail.domain.cloudflareMode ? t("common.on") : t("common.off")}`,
+    `${t("domains.ssl")}: ${detail.domain.sslEnabled ? t("common.on") : t("common.off")}`,
+    `${t("domains.forceHttps")}: ${detail.domain.forceHttps ? t("common.on") : t("common.off")}`,
+    `${t("domains.badBotMode")}: ${detail.domain.badBotMode ? t("common.on") : t("common.off")}`
+  ];
 
   return (
     <div className="space-y-6">
@@ -111,7 +128,7 @@ export function DomainDetailPage() {
         }
         actions={
           <>
-            <Button variant="secondary" onClick={() => sslMutation.mutate("issue")}>
+            <Button onClick={() => sslMutation.mutate("issue")}>
               {t("actions.issueSsl")}
             </Button>
             <Button variant="secondary" onClick={() => sslMutation.mutate("renew")}>
@@ -120,88 +137,170 @@ export function DomainDetailPage() {
           </>
         }
       >
-        <HeaderMetric label={t("statistics.incoming")} value={String(stats.incomingRequests)} tone="accent" />
-        <HeaderMetric label={t("statistics.blocked")} value={String(stats.blockRequests)} tone="warm" />
-        <HeaderMetric label={t("statistics.uniqueIps")} value={String(stats.uniqueIps)} />
+        <HeaderMetric label={t("statistics.incoming")} value={formatNumber(stats.incomingRequests)} tone="accent" />
+        <HeaderMetric label={t("statistics.blocked")} value={formatNumber(stats.blockRequests)} tone="warm" />
+        <HeaderMetric label={t("statistics.uniqueIps")} value={formatNumber(stats.uniqueIps)} />
       </PageHeader>
 
       {hasError ? (
-        <Card className="border-black/12 bg-neutral-100/80 text-neutral-900 dark:border-white/10 dark:bg-neutral-900/80 dark:text-neutral-100">
+        <Card className="border-neutral-300 bg-neutral-100 text-neutral-900 dark:border-white/10 dark:bg-neutral-900 dark:text-neutral-100">
           <h2 className="text-lg font-bold">{t("messages.requestFailed")}</h2>
           <p className="mt-1 text-sm opacity-80">{t("messages.domainPartial")}</p>
         </Card>
       ) : null}
 
-      <div className="grid gap-6 xl:grid-cols-[1.2fr_1fr]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_360px]">
         <Card>
-          <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("domains.detailStats")}</h3>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {[
-              [t("statistics.incoming"), stats.incomingRequests],
-              [t("statistics.allowed"), stats.allowedRequests],
-              [t("statistics.blocked"), stats.blockRequests],
-              [t("statistics.challenged"), stats.challengedRequests],
-              [t("statistics.uniqueIps"), stats.uniqueIps],
-              [t("statistics.peakRps"), stats.peakRps]
-            ].map(([label, value]) => (
-              <div
-                key={String(label)}
-                className="rounded-2xl border border-white/80 bg-white/70 px-4 py-4 dark:border-slate-800 dark:bg-slate-900/70"
-              >
-                <div className="text-xs uppercase tracking-[0.16em] text-slate-500">{label}</div>
-                <div className="mt-2 font-display text-2xl font-bold tracking-[-0.04em]">{value}</div>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <div className="text-[11px] uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{t("domains.detailStats")}</div>
+                <h3 className="mt-2 font-display text-2xl font-bold tracking-[-0.04em]">{detail.domain.name || t("domains.domain")}</h3>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                  {detail.domain.originProtocol}://{detail.domain.originHost}:{detail.domain.originPort}
+                </p>
               </div>
-            ))}
+              <span className="inline-flex items-center rounded-full border border-black/10 bg-neutral-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-700 dark:border-white/10 dark:bg-neutral-900 dark:text-slate-200">
+                {detail.nginxStatus}
+              </span>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {[
+                [t("statistics.incoming"), stats.incomingRequests],
+                [t("statistics.allowed"), stats.allowedRequests],
+                [t("statistics.blocked"), stats.blockRequests],
+                [t("statistics.challenged"), stats.challengedRequests],
+                [t("statistics.uniqueIps"), stats.uniqueIps],
+                [t("statistics.peakRps"), stats.peakRps]
+              ].map(([label, value], index) => (
+                <div
+                  key={String(label)}
+                  className={clsx(
+                    "rounded-2xl border px-4 py-4",
+                    index === 0
+                      ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
+                      : "border-black/10 bg-neutral-50 text-slate-950 dark:border-white/10 dark:bg-neutral-900 dark:text-slate-50"
+                  )}
+                >
+                  <div className={clsx("text-[11px] uppercase tracking-[0.18em]", index === 0 ? "text-white/65 dark:text-black/60" : "text-slate-500 dark:text-slate-400")}>
+                    {label}
+                  </div>
+                  <div className="mt-3 font-display text-[2rem] font-bold leading-none tracking-[-0.05em]">{formatNumber(Number(value) || 0)}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {overviewItems.map((item) => (
+                <div key={item.label} className="rounded-2xl border border-black/10 bg-white px-4 py-3 dark:border-white/10 dark:bg-neutral-950">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{item.label}</div>
+                  <div className="mt-2 break-words text-sm font-semibold text-slate-900 dark:text-slate-100">{item.value}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </Card>
 
         <Card>
-          <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("domains.rules")}</h3>
-          <div className="mt-4 space-y-3">
-            {detail.rules.map((rule) => (
-              <div key={rule.id || rule.name} className="rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-800">
-                <div className="font-semibold">{rule.name}</div>
-                <div className="mt-1 text-sm text-slate-500">
-                  {rule.type} | {rule.action} | {rule.pattern}
-                </div>
-              </div>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-[11px] uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{t("domains.mode")}</div>
+              <h3 className="mt-2 font-display text-2xl font-bold tracking-[-0.04em]">{t("domains.rules")}</h3>
+            </div>
+            <span className="inline-flex items-center rounded-full border border-black/10 bg-neutral-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-700 dark:border-white/10 dark:bg-neutral-900 dark:text-slate-200">
+              {detail.rules.length}
+            </span>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            {statusPills.map((item) => (
+              <span
+                key={item}
+                className="inline-flex items-center rounded-full border border-black/10 bg-neutral-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-700 dark:border-white/10 dark:bg-neutral-900 dark:text-slate-200"
+              >
+                {item}
+              </span>
             ))}
+          </div>
+
+          <div className="mt-5 space-y-3">
+            {detail.rules.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-black/12 bg-neutral-50 px-4 py-5 text-sm text-slate-500 dark:border-white/10 dark:bg-neutral-900 dark:text-slate-400">
+                {t("messages.noDataYet")}
+              </div>
+            ) : null}
+            {[
+              ...detail.rules.map((rule) => (
+                <div key={rule.id || rule.name} className="rounded-2xl border border-black/10 bg-white px-4 py-4 dark:border-white/10 dark:bg-neutral-950">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="font-semibold text-slate-950 dark:text-slate-50">{rule.name}</div>
+                    <span className="inline-flex items-center rounded-full border border-black/10 bg-black px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white dark:border-white/10 dark:bg-white dark:text-black">
+                      {rule.action}
+                    </span>
+                  </div>
+                  <div className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                    {rule.type} | {rule.pattern}
+                  </div>
+                </div>
+              ))
+            ]}
           </div>
         </Card>
       </div>
 
-      <Card>
-        <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("domains.recentLogs")}</h3>
-        <Table>
-          <THead>
-            <TR>
-              <TH>{t("statistics.time")}</TH>
-              <TH>{t("statistics.ip")}</TH>
-              <TH>{t("statistics.path")}</TH>
-              <TH>{t("statistics.status")}</TH>
-              <TH>{t("statistics.reason")}</TH>
-            </TR>
-          </THead>
-          <TBody>
-            {logs.length === 0 ? (
+      <Card className="overflow-hidden p-0">
+        <div className="flex flex-col gap-2 border-b border-black/10 px-6 py-5 dark:border-white/10">
+          <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("domains.recentLogs")}</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{formatNumber(logs.length)} events</p>
+        </div>
+        <div className="p-6 pt-5">
+          <Table>
+            <THead>
               <TR>
-                <TD colSpan={5} className="text-center text-slate-500">
-                  {t("messages.noLogsYet")}
-                </TD>
+                <TH>{t("statistics.time")}</TH>
+                <TH>{t("statistics.ip")}</TH>
+                <TH>{t("statistics.path")}</TH>
+                <TH>{t("statistics.status")}</TH>
+                <TH>{t("statistics.reason")}</TH>
               </TR>
-            ) : null}
-            {logs.map((item) => (
-              <TR key={item.id}>
-                <TD>{formatDate(item.createdAt)}</TD>
-                <TD>{item.clientIp}</TD>
-                <TD>{item.path}</TD>
-                <TD>{item.decision}</TD>
-                <TD>{item.blockReason || "-"}</TD>
-              </TR>
-            ))}
-          </TBody>
-        </Table>
+            </THead>
+            <TBody>
+              {logs.length === 0 ? (
+                <TR>
+                  <TD colSpan={5} className="py-8 text-center text-slate-500">
+                    {t("messages.noLogsYet")}
+                  </TD>
+                </TR>
+              ) : null}
+              {logs.map((item) => (
+                <TR key={item.id}>
+                  <TD>{formatDate(item.createdAt)}</TD>
+                  <TD className="font-mono text-[13px]">{item.clientIp}</TD>
+                  <TD className="font-mono text-[13px]">{item.path}</TD>
+                  <TD>
+                    <span className={decisionBadgeClass(item.decision)}>{item.decision}</span>
+                  </TD>
+                  <TD className="font-mono text-[13px] text-slate-500 dark:text-slate-400">{item.blockReason || "-"}</TD>
+                </TR>
+              ))}
+            </TBody>
+          </Table>
+        </div>
       </Card>
     </div>
   );
+}
+
+function decisionBadgeClass(decision: string) {
+  if (decision === "allowed") {
+    return "inline-flex items-center rounded-full border border-black/10 bg-neutral-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-700 dark:border-white/10 dark:bg-neutral-900 dark:text-slate-200";
+  }
+  if (decision === "blocked") {
+    return "inline-flex items-center rounded-full border border-black bg-black px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white dark:border-white dark:bg-white dark:text-black";
+  }
+  if (decision === "challenge_passed") {
+    return "inline-flex items-center rounded-full border border-neutral-300 bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-700 dark:border-white/10 dark:bg-neutral-950 dark:text-slate-200";
+  }
+  return "inline-flex items-center rounded-full border border-black/10 bg-neutral-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-700 dark:border-white/10 dark:bg-neutral-900 dark:text-slate-200";
 }
