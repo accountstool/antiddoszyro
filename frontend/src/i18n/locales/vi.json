@@ -1,0 +1,155 @@
+{
+  "brand": {
+    "tagline": "Kiem soat lop edge. Bao ve moi domain.",
+    "description": "He thong tu host de quan ly reverse proxy, anti-bot va anti-DDoS cho nhieu domain tren Ubuntu VPS."
+  },
+  "feature": {
+    "multiDomain": "Bao ve va dinh tuyen nhieu domain tren mot VPS.",
+    "challenge": "Co che challenge cookie va JavaScript cho luong truy cap nghi ngo.",
+    "stats": "Bieu do, log va thong ke tan cong trong mot giao dien."
+  },
+  "nav": {
+    "dashboard": "Tong quan",
+    "domains": "Domain",
+    "statistics": "Thong ke",
+    "ipControl": "Kiem soat IP",
+    "settings": "Cai dat",
+    "users": "Nguoi dung",
+    "auditLogs": "Nhat ky audit"
+  },
+  "header": {
+    "welcome": "Phien quan tri"
+  },
+  "actions": {
+    "logout": "Dang xuat",
+    "loading": "Dang tai...",
+    "save": "Luu",
+    "cancel": "Huy",
+    "close": "Dong",
+    "add": "Them",
+    "edit": "Sua",
+    "delete": "Xoa",
+    "view": "Xem",
+    "issueSsl": "Cap SSL",
+    "renewSsl": "Gia han SSL",
+    "search": "Tim kiem",
+    "actions": "Thao tac"
+  },
+  "common": {
+    "enabled": "Bat",
+    "disabled": "Tat",
+    "on": "Bat",
+    "off": "Tat"
+  },
+  "messages": {
+    "saved": "Da luu",
+    "deleted": "Da xoa",
+    "requestFailed": "Yeu cau that bai"
+  },
+  "login": {
+    "title": "Dang nhap quan tri",
+    "subtitle": "Su dung tai khoan ShieldPanel de quan ly domain duoc bao ve.",
+    "identifier": "Ten dang nhap hoac email",
+    "password": "Mat khau",
+    "rememberMe": "Ghi nho dang nhap",
+    "submit": "Dang nhap",
+    "failed": "Dang nhap that bai"
+  },
+  "dashboard": {
+    "totalDomains": "Tong so domain",
+    "blockedToday": "So luot chan hom nay",
+    "currentRps": "So request/s hien tai",
+    "challengePassRate": "Ty le vuot challenge",
+    "requests24h": "Luu luong 24 gio qua",
+    "topAttackedDomain": "Domain bi tan cong nhieu nhat",
+    "topIps": "IP noi bat",
+    "topDomains": "Domain noi bat",
+    "topReasons": "Ly do noi bat"
+  },
+  "domains": {
+    "title": "Quan ly domain",
+    "subtitle": "Quan ly origin, SSL, che do challenge va rule tung domain.",
+    "add": "Them domain",
+    "edit": "Sua domain",
+    "domain": "Domain",
+    "origin": "Origin",
+    "originHost": "Host origin",
+    "originPort": "Cong origin",
+    "protocol": "Giao thuc",
+    "mode": "Bao ve",
+    "ssl": "SSL",
+    "updatedAt": "Cap nhat",
+    "protectionMode": "Che do bao ve",
+    "challengeMode": "Che do challenge",
+    "rateLimitRps": "Rate limit RPS",
+    "rateLimitBurst": "Burst",
+    "allowedMethods": "Method duoc phep",
+    "rulesJson": "Rule JSON",
+    "notes": "Ghi chu",
+    "enabled": "Bat",
+    "protectionEnabled": "Bat bao ve",
+    "cloudflareMode": "Che do Cloudflare",
+    "sslEnabled": "Bat SSL",
+    "sslAutoIssue": "Tu cap SSL",
+    "forceHttps": "Ep HTTPS",
+    "badBotMode": "Bat bad bot",
+    "headerValidation": "Kiem tra header",
+    "jsChallengeEnabled": "Bat JS challenge",
+    "detailStats": "Thong ke domain gan day",
+    "rules": "Rule cua domain",
+    "recentLogs": "Log gan day"
+  },
+  "statistics": {
+    "incoming": "Tong request vao",
+    "allowed": "Cho phep",
+    "blocked": "Bi chan",
+    "challenged": "Bi challenge",
+    "uniqueIps": "IP duy nhat",
+    "peakRps": "Dinh requests/s",
+    "challengePassRate": "Ty le vuot challenge",
+    "requestsOverTime": "Request theo thoi gian",
+    "topReasons": "Ly do chan noi bat",
+    "logs": "Nhat ky request",
+    "allDomains": "Tat ca domain",
+    "allDecisions": "Tat ca trang thai",
+    "reason": "Ly do",
+    "time": "Thoi gian",
+    "domain": "Domain",
+    "ip": "IP",
+    "path": "Duong dan",
+    "status": "Trang thai"
+  },
+  "ipControl": {
+    "title": "Kiem soat IP",
+    "subtitle": "Quan ly blacklist, whitelist va temp ban dang hoat dong.",
+    "blacklist": "Danh sach chan",
+    "whitelist": "Danh sach cho phep",
+    "temporaryBans": "Temp ban",
+    "ip": "IP",
+    "cidr": "CIDR",
+    "reason": "Ly do"
+  },
+  "settings": {
+    "title": "Cai dat he thong",
+    "subtitle": "Tinh chinh ngon ngu, session mac dinh va trusted proxy."
+  },
+  "users": {
+    "title": "Nguoi dung quan tri",
+    "subtitle": "Tao va quan ly tai khoan dang nhap panel.",
+    "username": "Ten dang nhap",
+    "email": "Email",
+    "displayName": "Ten hien thi",
+    "role": "Vai tro",
+    "language": "Ngon ngu",
+    "password": "Mat khau",
+    "lastLogin": "Lan dang nhap cuoi"
+  },
+  "audit": {
+    "title": "Nhat ky audit",
+    "subtitle": "Theo doi thao tac quan tri va su kien dang nhap.",
+    "user": "Nguoi dung",
+    "action": "Hanh dong",
+    "target": "Doi tuong",
+    "details": "Chi tiet"
+  }
+}

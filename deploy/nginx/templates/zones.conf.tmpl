@@ -1,0 +1,4 @@
+# Reference rate-limit zones template.
+
+limit_req_zone $binary_remote_addr zone=sp_example_com:20m rate=20r/s;
+limit_conn_zone $binary_remote_addr zone=spc_example_com:20m;

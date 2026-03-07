@@ -1,0 +1,155 @@
+{
+  "brand": {
+    "tagline": "Control the edge. Protect every domain.",
+    "description": "Self-hosted multi-domain anti-DDoS, anti-bot, and reverse proxy management for Ubuntu VPS."
+  },
+  "feature": {
+    "multiDomain": "Route and protect multiple domains from one VPS.",
+    "challenge": "Cookie and JavaScript challenge flows for suspicious traffic.",
+    "stats": "Operational charts, logs, and attack insights in one panel."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "domains": "Domains",
+    "statistics": "Statistics",
+    "ipControl": "IP Control",
+    "settings": "Settings",
+    "users": "Users",
+    "auditLogs": "Audit Logs"
+  },
+  "header": {
+    "welcome": "Admin session"
+  },
+  "actions": {
+    "logout": "Logout",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "issueSsl": "Issue SSL",
+    "renewSsl": "Renew SSL",
+    "search": "Search",
+    "actions": "Actions"
+  },
+  "common": {
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "on": "On",
+    "off": "Off"
+  },
+  "messages": {
+    "saved": "Saved successfully",
+    "deleted": "Deleted successfully",
+    "requestFailed": "Request failed"
+  },
+  "login": {
+    "title": "Admin Login",
+    "subtitle": "Use your ShieldPanel credentials to manage protected domains.",
+    "identifier": "Username or email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "submit": "Sign in",
+    "failed": "Login failed"
+  },
+  "dashboard": {
+    "totalDomains": "Total domains",
+    "blockedToday": "Blocked today",
+    "currentRps": "Current requests/s",
+    "challengePassRate": "Challenge pass rate",
+    "requests24h": "Traffic in the last 24 hours",
+    "topAttackedDomain": "Top attacked domain",
+    "topIps": "Top IPs",
+    "topDomains": "Top domains",
+    "topReasons": "Top reasons"
+  },
+  "domains": {
+    "title": "Domains",
+    "subtitle": "Manage origins, SSL, challenge modes, and per-domain rules.",
+    "add": "Add domain",
+    "edit": "Edit domain",
+    "domain": "Domain",
+    "origin": "Origin",
+    "originHost": "Origin host",
+    "originPort": "Origin port",
+    "protocol": "Protocol",
+    "mode": "Protection",
+    "ssl": "SSL",
+    "updatedAt": "Updated",
+    "protectionMode": "Protection mode",
+    "challengeMode": "Challenge mode",
+    "rateLimitRps": "Rate limit RPS",
+    "rateLimitBurst": "Rate limit burst",
+    "allowedMethods": "Allowed methods",
+    "rulesJson": "Rules JSON",
+    "notes": "Notes",
+    "enabled": "Enabled",
+    "protectionEnabled": "Protection enabled",
+    "cloudflareMode": "Cloudflare mode",
+    "sslEnabled": "SSL enabled",
+    "sslAutoIssue": "Auto issue SSL",
+    "forceHttps": "Force HTTPS",
+    "badBotMode": "Bad bot mode",
+    "headerValidation": "Header validation",
+    "jsChallengeEnabled": "JS challenge",
+    "detailStats": "Recent domain statistics",
+    "rules": "Domain rules",
+    "recentLogs": "Recent logs"
+  },
+  "statistics": {
+    "incoming": "Incoming requests",
+    "allowed": "Allowed",
+    "blocked": "Blocked",
+    "challenged": "Challenged",
+    "uniqueIps": "Unique IPs",
+    "peakRps": "Peak requests/s",
+    "challengePassRate": "Challenge pass rate",
+    "requestsOverTime": "Requests over time",
+    "topReasons": "Top block reasons",
+    "logs": "Request logs",
+    "allDomains": "All domains",
+    "allDecisions": "All decisions",
+    "reason": "Reason",
+    "time": "Time",
+    "domain": "Domain",
+    "ip": "IP",
+    "path": "Path",
+    "status": "Status"
+  },
+  "ipControl": {
+    "title": "IP Control",
+    "subtitle": "Manage global blacklists, whitelists, and active temporary bans.",
+    "blacklist": "Blacklist",
+    "whitelist": "Whitelist",
+    "temporaryBans": "Temporary bans",
+    "ip": "IP",
+    "cidr": "CIDR",
+    "reason": "Reason"
+  },
+  "settings": {
+    "title": "System Settings",
+    "subtitle": "Tune panel language, session defaults, and trusted proxy behavior."
+  },
+  "users": {
+    "title": "Admin Users",
+    "subtitle": "Create and maintain panel users and roles.",
+    "username": "Username",
+    "email": "Email",
+    "displayName": "Display name",
+    "role": "Role",
+    "language": "Language",
+    "password": "Password",
+    "lastLogin": "Last login"
+  },
+  "audit": {
+    "title": "Audit Logs",
+    "subtitle": "Review admin actions, changes, and sign-in events.",
+    "user": "User",
+    "action": "Action",
+    "target": "Target",
+    "details": "Details"
+  }
+}
