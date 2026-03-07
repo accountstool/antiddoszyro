@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,26 +6,34 @@
 
 :root {
   color-scheme: light;
-  --bg: 248 250 252;
+  --bg: 242 247 249;
   --bg-elevated: 255 255 255;
-  --fg: 15 23 42;
-  --muted: 71 85 105;
-  --border: 203 213 225;
-  --accent: 15 118 110;
-  --accent-soft: 204 251 241;
+  --bg-panel: 249 251 252;
+  --fg: 10 19 33;
+  --muted: 91 105 128;
+  --border: 210 219 229;
+  --accent: 13 148 136;
+  --accent-strong: 8 104 93;
+  --accent-soft: 209 250 244;
   --danger: 194 65 12;
+  --danger-soft: 255 237 213;
+  --ring: 15 118 110;
 }
 
 .theme-dark {
   color-scheme: dark;
-  --bg: 2 8 23;
-  --bg-elevated: 15 23 42;
-  --fg: 226 232 240;
-  --muted: 148 163 184;
-  --border: 51 65 85;
+  --bg: 6 13 23;
+  --bg-elevated: 10 20 34;
+  --bg-panel: 16 28 45;
+  --fg: 234 241 248;
+  --muted: 142 160 183;
+  --border: 42 60 85;
   --accent: 45 212 191;
-  --accent-soft: 17 94 89;
+  --accent-strong: 20 184 166;
+  --accent-soft: 11 72 66;
   --danger: 251 146 60;
+  --danger-soft: 95 39 13;
+  --ring: 45 212 191;
 }
 
 html,
@@ -37,23 +45,86 @@ body,
 body {
   margin: 0;
   font-family: "Manrope", sans-serif;
+  letter-spacing: -0.01em;
   background:
-    radial-gradient(circle at top left, rgba(45, 212, 191, 0.18), transparent 35%),
-    radial-gradient(circle at top right, rgba(251, 146, 60, 0.12), transparent 30%),
+    radial-gradient(circle at 0% 0%, rgba(13, 148, 136, 0.14), transparent 30%),
+    radial-gradient(circle at 100% 0%, rgba(249, 115, 22, 0.1), transparent 24%),
+    radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.08), transparent 26%),
     rgb(var(--bg));
   color: rgb(var(--fg));
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 18%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent 20%, transparent 80%, rgba(255, 255, 255, 0.05));
+  mix-blend-mode: soft-light;
+  opacity: 0.65;
+}
+
+.theme-dark body::before {
+  opacity: 0.32;
 }
 
 * {
   box-sizing: border-box;
 }
 
+::selection {
+  background: rgba(var(--accent), 0.24);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .panel-scroll::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 }
 
 .panel-scroll::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  background: rgba(var(--muted), 0.28);
+  border: 3px solid transparent;
+  background: linear-gradient(180deg, rgba(var(--accent), 0.55), rgba(var(--muted), 0.45));
+  background-clip: padding-box;
+}
+
+.panel-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.panel-dot {
+  position: relative;
+}
+
+.panel-dot::before {
+  content: "";
+  position: absolute;
+  left: -0.95rem;
+  top: 50%;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: rgba(var(--accent), 0.9);
+  box-shadow: 0 0 0 6px rgba(var(--accent), 0.12);
+}
+
+.panel-grid-overlay {
+  background-image:
+    linear-gradient(rgba(var(--border), 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--border), 0.18) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 92%);
+}
+
+.text-balance {
+  text-wrap: balance;
 }

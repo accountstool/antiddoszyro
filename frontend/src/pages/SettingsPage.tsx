@@ -7,6 +7,7 @@ import { api, unwrap } from "../api/client";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
+import { HeaderMetric, PageHeader } from "../components/ui/PageHeader";
 import { Spinner } from "../components/ui/Spinner";
 import type { SystemSetting } from "../types/api";
 
@@ -40,13 +41,13 @@ export function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <Card className="flex items-center justify-between gap-3">
-        <div>
-          <h2 className="text-2xl font-extrabold">{t("settings.title")}</h2>
-          <p className="text-sm text-slate-500">{t("settings.subtitle")}</p>
-        </div>
-        <Button onClick={() => saveMutation.mutate()}>{t("actions.save")}</Button>
-      </Card>
+      <PageHeader
+        title={t("settings.title")}
+        subtitle={t("settings.subtitle")}
+        actions={<Button onClick={() => saveMutation.mutate()}>{t("actions.save")}</Button>}
+      >
+        <HeaderMetric label={t("settings.keysCount")} value={String(settings.length)} tone="accent" />
+      </PageHeader>
 
       <Card>
         <div className="grid gap-4">

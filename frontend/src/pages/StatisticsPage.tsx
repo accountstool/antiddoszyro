@@ -7,6 +7,7 @@ import { ReasonsChart } from "../components/charts/ReasonsChart";
 import { TrafficChart } from "../components/charts/TrafficChart";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
+import { HeaderMetric, PageHeader } from "../components/ui/PageHeader";
 import { Select } from "../components/ui/Select";
 import { Spinner } from "../components/ui/Spinner";
 import { Table, TBody, TD, TH, THead, TR } from "../components/ui/Table";
@@ -69,6 +70,12 @@ export function StatisticsPage() {
 
   return (
     <div className="space-y-6">
+      <PageHeader title={t("nav.statistics")} subtitle={t("statistics.requestsOverTime")}>
+        <HeaderMetric label={t("statistics.incoming")} value={formatNumber(stats.incomingRequests)} tone="accent" />
+        <HeaderMetric label={t("statistics.blocked")} value={formatNumber(stats.blockRequests)} tone="warm" />
+        <HeaderMetric label={t("statistics.uniqueIps")} value={formatNumber(stats.uniqueIps)} />
+      </PageHeader>
+
       {hasError ? (
         <Card className="border-amber-300/70 bg-amber-50/80 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100">
           <h2 className="text-lg font-bold">{t("messages.requestFailed")}</h2>
@@ -111,17 +118,17 @@ export function StatisticsPage() {
 
       <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
         <Card>
-          <h2 className="text-lg font-bold">{t("statistics.requestsOverTime")}</h2>
+          <h2 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("statistics.requestsOverTime")}</h2>
           <TrafficChart data={stats.requestSeries} />
         </Card>
         <Card>
-          <h2 className="text-lg font-bold">{t("statistics.topReasons")}</h2>
+          <h2 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("statistics.topReasons")}</h2>
           <ReasonsChart data={stats.topReasons} />
         </Card>
       </div>
 
       <Card>
-        <h2 className="text-lg font-bold">{t("statistics.logs")}</h2>
+        <h2 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("statistics.logs")}</h2>
         <Table>
           <THead>
             <TR>

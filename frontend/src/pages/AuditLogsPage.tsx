@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { api, unwrap } from "../api/client";
 import { Card } from "../components/ui/Card";
+import { HeaderMetric, PageHeader } from "../components/ui/PageHeader";
 import { Spinner } from "../components/ui/Spinner";
 import { Table, TBody, TD, TH, THead, TR } from "../components/ui/Table";
 import type { AuditLog } from "../types/api";
@@ -25,10 +26,9 @@ export function AuditLogsPage() {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <h2 className="text-2xl font-extrabold">{t("audit.title")}</h2>
-        <p className="text-sm text-slate-500">{t("audit.subtitle")}</p>
-      </Card>
+      <PageHeader title={t("audit.title")} subtitle={t("audit.subtitle")}>
+        <HeaderMetric label={t("audit.totalEvents")} value={String((auditQuery.data ?? []).length)} tone="accent" />
+      </PageHeader>
 
       <Card>
         <Table>

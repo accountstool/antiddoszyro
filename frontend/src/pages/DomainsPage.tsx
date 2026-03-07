@@ -10,6 +10,7 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Modal } from "../components/ui/Modal";
+import { HeaderMetric, PageHeader } from "../components/ui/PageHeader";
 import { Select } from "../components/ui/Select";
 import { Spinner } from "../components/ui/Spinner";
 import { Table, TBody, TD, TH, THead, TR } from "../components/ui/Table";
@@ -138,16 +139,19 @@ export function DomainsPage() {
 
   return (
     <div className="space-y-6">
-      <Card className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h2 className="text-2xl font-extrabold">{t("domains.title")}</h2>
-          <p className="text-sm text-slate-500">{t("domains.subtitle")}</p>
-        </div>
-        <div className="flex gap-3">
-          <Input placeholder={t("actions.search")} value={search} onChange={(event) => setSearch(event.target.value)} />
-          <Button onClick={openCreate}>{t("domains.add")}</Button>
-        </div>
-      </Card>
+      <PageHeader
+        title={t("domains.title")}
+        subtitle={t("domains.subtitle")}
+        actions={
+          <>
+            <Input className="min-w-[220px]" placeholder={t("actions.search")} value={search} onChange={(event) => setSearch(event.target.value)} />
+            <Button onClick={openCreate}>{t("domains.add")}</Button>
+          </>
+        }
+      >
+        <HeaderMetric label={t("dashboard.totalDomains")} value={String(domains.length)} tone="accent" />
+        <HeaderMetric label={t("domains.sslDomains")} value={String(domains.filter((item) => item.sslEnabled).length)} />
+      </PageHeader>
 
       <Card>
         {domainsQuery.isLoading ? (
@@ -177,14 +181,14 @@ export function DomainsPage() {
                   <TD>{item.protectionMode}</TD>
                   <TD>{item.sslEnabled ? t("common.on") : t("common.off")}</TD>
                   <TD>{formatDate(item.updatedAt)}</TD>
-                  <TD className="space-x-2">
-                    <Link className="text-sm font-semibold text-teal-700" to={`/domains/${item.id}`}>
+                  <TD className="space-x-2 whitespace-nowrap">
+                    <Link className="inline-flex rounded-full bg-teal-50 px-3 py-1.5 text-sm font-semibold text-teal-700 dark:bg-teal-950/35 dark:text-teal-200" to={`/domains/${item.id}`}>
                       {t("actions.view")}
                     </Link>
-                    <button className="text-sm font-semibold text-slate-600" onClick={() => void openEdit(item)}>
+                    <button className="inline-flex rounded-full bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-700 dark:bg-slate-900 dark:text-slate-200" onClick={() => void openEdit(item)}>
                       {t("actions.edit")}
                     </button>
-                    <button className="text-sm font-semibold text-orange-700" onClick={() => deleteMutation.mutate(item.id)}>
+                    <button className="inline-flex rounded-full bg-orange-50 px-3 py-1.5 text-sm font-semibold text-orange-700 dark:bg-orange-950/30 dark:text-orange-200" onClick={() => deleteMutation.mutate(item.id)}>
                       {t("actions.delete")}
                     </button>
                   </TD>
@@ -244,7 +248,7 @@ export function DomainsPage() {
           </Field>
           <Field className="md:col-span-2" label={t("domains.rulesJson")}>
             <textarea
-              className="min-h-48 w-full rounded-xl border border-slate-200 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 dark:border-slate-700 dark:bg-slate-900"
+              className="min-h-48 w-full rounded-2xl border border-white/80 bg-white/72 px-4 py-3 text-sm text-slate-900 shadow-sm shadow-slate-900/5 outline-none transition focus:border-teal-300 focus:bg-white focus:ring-4 focus:ring-teal-500/12 dark:border-slate-800 dark:bg-slate-950/78 dark:text-slate-100 dark:focus:border-teal-700 dark:focus:bg-slate-950"
               value={editing.rulesText}
               onChange={(event) => setEditing((current) => ({ ...current, rulesText: event.target.value }))}
             />
@@ -266,6 +270,7 @@ export function DomainsPage() {
             ].map(([field, label]) => (
               <label key={field} className="flex items-center gap-2">
                 <input
+                  className="h-4 w-4 accent-teal-600"
                   checked={Boolean(editing[field as keyof DomainForm])}
                   onChange={(event) => setEditing((current) => ({ ...current, [field]: event.target.checked }))}
                   type="checkbox"
@@ -291,7 +296,7 @@ export function DomainsPage() {
 function Field({ label, children, className = "" }: { label: string; children: ReactNode; className?: string }) {
   return (
     <div className={className}>
-      <label className="mb-2 block text-sm font-semibold">{label}</label>
+      <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200">{label}</label>
       {children}
     </div>
   );

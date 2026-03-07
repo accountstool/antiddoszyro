@@ -5,6 +5,7 @@ import { api, unwrap } from "../api/client";
 import { ReasonsChart } from "../components/charts/ReasonsChart";
 import { TrafficChart } from "../components/charts/TrafficChart";
 import { Card } from "../components/ui/Card";
+import { HeaderMetric, PageHeader } from "../components/ui/PageHeader";
 import { Spinner } from "../components/ui/Spinner";
 import { StatCard } from "../components/ui/StatCard";
 import type { DashboardSummary, RankedMetric, TimePoint } from "../types/api";
@@ -65,6 +66,12 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <PageHeader title={t("nav.dashboard")} subtitle={t("brand.description")}>
+        <HeaderMetric label={t("dashboard.totalDomains")} value={formatNumber(summary.totalDomains)} tone="accent" />
+        <HeaderMetric label={t("dashboard.currentRps")} value={formatNumber(summary.currentRps)} />
+        <HeaderMetric label={t("dashboard.topAttackedDomain")} value={summary.topAttackedDomain || "-"} tone="warm" />
+      </PageHeader>
+
       {hasError ? (
         <Card className="border-amber-300/70 bg-amber-50/80 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100">
           <h2 className="text-lg font-bold">{t("messages.requestFailed")}</h2>
@@ -83,7 +90,7 @@ export function DashboardPage() {
         <Card>
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold">{t("dashboard.requests24h")}</h2>
+              <h2 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("dashboard.requests24h")}</h2>
               <p className="text-sm text-slate-500">{t("dashboard.topAttackedDomain")}: {summary.topAttackedDomain || "-"}</p>
             </div>
           </div>
@@ -91,7 +98,7 @@ export function DashboardPage() {
         </Card>
 
         <Card>
-          <h2 className="text-xl font-bold">{t("dashboard.topReasons")}</h2>
+          <h2 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("dashboard.topReasons")}</h2>
           <ReasonsChart data={charts.topReasons} />
         </Card>
       </div>
@@ -110,7 +117,7 @@ function MetricList({ title, items }: { title: string; items: RankedMetric[] }) 
 
   return (
     <Card>
-      <h2 className="text-lg font-bold">{title}</h2>
+      <h2 className="font-display text-xl font-bold tracking-[-0.04em]">{title}</h2>
       <div className="mt-4 space-y-3">
         {items.length === 0 ? (
           <div className="rounded-2xl bg-slate-50/80 px-4 py-3 text-sm text-slate-500 dark:bg-slate-900">

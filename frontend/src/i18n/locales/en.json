@@ -76,6 +76,7 @@
     "subtitle": "Manage origins, SSL, challenge modes, and per-domain rules.",
     "add": "Add domain",
     "edit": "Edit domain",
+    "sslDomains": "SSL domains",
     "domain": "Domain",
     "origin": "Origin",
     "originHost": "Origin host",
@@ -130,17 +131,20 @@
     "blacklist": "Blacklist",
     "whitelist": "Whitelist",
     "temporaryBans": "Temporary bans",
+    "activeEntries": "Active entries",
     "ip": "IP",
     "cidr": "CIDR",
     "reason": "Reason"
   },
   "settings": {
     "title": "System Settings",
-    "subtitle": "Tune panel language, session defaults, and trusted proxy behavior."
+    "subtitle": "Tune panel language, session defaults, and trusted proxy behavior.",
+    "keysCount": "Setting keys"
   },
   "users": {
     "title": "Admin Users",
     "subtitle": "Create and maintain panel users and roles.",
+    "totalUsers": "Total users",
     "username": "Username",
     "email": "Email",
     "displayName": "Display name",
@@ -152,6 +156,7 @@
   "audit": {
     "title": "Audit Logs",
     "subtitle": "Review admin actions, changes, and sign-in events.",
+    "totalEvents": "Total events",
     "user": "User",
     "action": "Action",
     "target": "Target",

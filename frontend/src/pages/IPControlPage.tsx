@@ -9,6 +9,7 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Modal } from "../components/ui/Modal";
+import { HeaderMetric, PageHeader } from "../components/ui/PageHeader";
 import { Spinner } from "../components/ui/Spinner";
 import { Table, TBody, TD, TH, THead, TR } from "../components/ui/Table";
 import type { IPEntry, TemporaryBan } from "../types/api";
@@ -60,24 +61,27 @@ export function IPControlPage() {
 
   return (
     <div className="space-y-6">
-      <Card className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-2xl font-extrabold">{t("ipControl.title")}</h2>
-          <p className="text-sm text-slate-500">{t("ipControl.subtitle")}</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant={listType === "blacklist" ? "primary" : "secondary"} onClick={() => setListType("blacklist")}>
-            {t("ipControl.blacklist")}
-          </Button>
-          <Button variant={listType === "whitelist" ? "primary" : "secondary"} onClick={() => setListType("whitelist")}>
-            {t("ipControl.whitelist")}
-          </Button>
-          <Button onClick={() => setOpen(true)}>{t("actions.add")}</Button>
-        </div>
-      </Card>
+      <PageHeader
+        title={t("ipControl.title")}
+        subtitle={t("ipControl.subtitle")}
+        actions={
+          <>
+            <Button variant={listType === "blacklist" ? "primary" : "secondary"} onClick={() => setListType("blacklist")}>
+              {t("ipControl.blacklist")}
+            </Button>
+            <Button variant={listType === "whitelist" ? "primary" : "secondary"} onClick={() => setListType("whitelist")}>
+              {t("ipControl.whitelist")}
+            </Button>
+            <Button onClick={() => setOpen(true)}>{t("actions.add")}</Button>
+          </>
+        }
+      >
+        <HeaderMetric label={t("ipControl.temporaryBans")} value={String((bansQuery.data ?? []).length)} tone="warm" />
+        <HeaderMetric label={t("ipControl.activeEntries")} value={String((entriesQuery.data ?? []).length)} tone="accent" />
+      </PageHeader>
 
       <Card>
-        <h3 className="text-lg font-bold">{t(`ipControl.${listType}`)}</h3>
+        <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{t(`ipControl.${listType}`)}</h3>
         <Table>
           <THead>
             <TR>
@@ -96,7 +100,7 @@ export function IPControlPage() {
                 <TD>{item.reason || "-"}</TD>
                 <TD>{formatDate(item.createdAt)}</TD>
                 <TD>
-                  <button className="text-sm font-semibold text-orange-700" onClick={() => deleteMutation.mutate(item.id)}>
+                  <button className="inline-flex rounded-full bg-orange-50 px-3 py-1.5 text-sm font-semibold text-orange-700 dark:bg-orange-950/30 dark:text-orange-200" onClick={() => deleteMutation.mutate(item.id)}>
                     {t("actions.delete")}
                   </button>
                 </TD>
@@ -107,7 +111,7 @@ export function IPControlPage() {
       </Card>
 
       <Card>
-        <h3 className="text-lg font-bold">{t("ipControl.temporaryBans")}</h3>
+        <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("ipControl.temporaryBans")}</h3>
         <Table>
           <THead>
             <TR>
@@ -153,7 +157,7 @@ export function IPControlPage() {
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-semibold">{label}</label>
+      <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200">{label}</label>
       {children}
     </div>
   );

@@ -12,16 +12,16 @@ export function Button({ children, className, variant = "primary", block, ...pro
   return (
     <button
       className={clsx(
-        "rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-semibold tracking-[-0.01em] transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent disabled:cursor-not-allowed disabled:opacity-60",
         block && "w-full",
         variant === "primary" &&
-          "bg-tide text-white shadow-lg shadow-teal-900/10 hover:bg-teal-700 focus:ring-teal-500",
+          "bg-gradient-to-r from-teal-600 via-teal-500 to-cyan-600 text-white shadow-lg shadow-teal-900/20 hover:translate-y-[-1px] hover:shadow-xl hover:shadow-teal-900/20 focus:ring-teal-500",
         variant === "secondary" &&
-          "border border-slate-300/60 bg-white/80 text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800",
+          "border border-white/80 bg-white/75 text-slate-800 shadow-sm shadow-slate-900/5 hover:border-teal-200 hover:bg-white dark:border-slate-800 dark:bg-slate-900/75 dark:text-slate-100 dark:hover:border-slate-700 dark:hover:bg-slate-900",
         variant === "danger" &&
-          "bg-ember text-white hover:bg-orange-700 focus:ring-orange-500",
+          "bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow-lg shadow-orange-900/15 hover:translate-y-[-1px] hover:shadow-xl hover:shadow-orange-900/20 focus:ring-orange-500",
         variant === "ghost" &&
-          "bg-transparent text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800",
+          "bg-transparent text-slate-600 hover:bg-white/60 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-900/70 dark:hover:text-white",
         className
       )}
       {...props}

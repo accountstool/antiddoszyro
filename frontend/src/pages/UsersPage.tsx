@@ -9,6 +9,7 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Modal } from "../components/ui/Modal";
+import { HeaderMetric, PageHeader } from "../components/ui/PageHeader";
 import { Select } from "../components/ui/Select";
 import { Spinner } from "../components/ui/Spinner";
 import { Table, TBody, TD, TH, THead, TR } from "../components/ui/Table";
@@ -81,21 +82,23 @@ export function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <Card className="flex items-center justify-between gap-3">
-        <div>
-          <h2 className="text-2xl font-extrabold">{t("users.title")}</h2>
-          <p className="text-sm text-slate-500">{t("users.subtitle")}</p>
-        </div>
-        <Button
-          onClick={() => {
-            setEditingId(null);
-            setForm(initialUser);
-            setOpen(true);
-          }}
-        >
-          {t("actions.add")}
-        </Button>
-      </Card>
+      <PageHeader
+        title={t("users.title")}
+        subtitle={t("users.subtitle")}
+        actions={
+          <Button
+            onClick={() => {
+              setEditingId(null);
+              setForm(initialUser);
+              setOpen(true);
+            }}
+          >
+            {t("actions.add")}
+          </Button>
+        }
+      >
+        <HeaderMetric label={t("users.totalUsers")} value={String(users.length)} tone="accent" />
+      </PageHeader>
 
       <Card>
         <Table>
@@ -118,9 +121,9 @@ export function UsersPage() {
                 <TD>{item.role}</TD>
                 <TD>{item.language}</TD>
                 <TD>{formatDate(item.lastLoginAt)}</TD>
-                <TD className="space-x-2">
+                <TD className="space-x-2 whitespace-nowrap">
                   <button
-                    className="text-sm font-semibold text-slate-600"
+                    className="inline-flex rounded-full bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-700 dark:bg-slate-900 dark:text-slate-200"
                     onClick={() => {
                       setEditingId(item.id);
                       setForm({
@@ -136,7 +139,7 @@ export function UsersPage() {
                   >
                     {t("actions.edit")}
                   </button>
-                  <button className="text-sm font-semibold text-orange-700" onClick={() => deleteMutation.mutate(item.id)}>
+                  <button className="inline-flex rounded-full bg-orange-50 px-3 py-1.5 text-sm font-semibold text-orange-700 dark:bg-orange-950/30 dark:text-orange-200" onClick={() => deleteMutation.mutate(item.id)}>
                     {t("actions.delete")}
                   </button>
                 </TD>
@@ -185,7 +188,7 @@ export function UsersPage() {
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-semibold">{label}</label>
+      <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200">{label}</label>
       {children}
     </div>
   );

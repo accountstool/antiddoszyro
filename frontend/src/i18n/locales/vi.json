@@ -76,6 +76,7 @@
     "subtitle": "Quan ly origin, SSL, che do challenge va rule tung domain.",
     "add": "Them domain",
     "edit": "Sua domain",
+    "sslDomains": "Domain bat SSL",
     "domain": "Domain",
     "origin": "Origin",
     "originHost": "Host origin",
@@ -130,17 +131,20 @@
     "blacklist": "Danh sach chan",
     "whitelist": "Danh sach cho phep",
     "temporaryBans": "Temp ban",
+    "activeEntries": "Muc dang hoat dong",
     "ip": "IP",
     "cidr": "CIDR",
     "reason": "Ly do"
   },
   "settings": {
     "title": "Cai dat he thong",
-    "subtitle": "Tinh chinh ngon ngu, session mac dinh va trusted proxy."
+    "subtitle": "Tinh chinh ngon ngu, session mac dinh va trusted proxy.",
+    "keysCount": "So khoa cai dat"
   },
   "users": {
     "title": "Nguoi dung quan tri",
     "subtitle": "Tao va quan ly tai khoan dang nhap panel.",
+    "totalUsers": "Tong nguoi dung",
     "username": "Ten dang nhap",
     "email": "Email",
     "displayName": "Ten hien thi",
@@ -152,6 +156,7 @@
   "audit": {
     "title": "Nhat ky audit",
     "subtitle": "Theo doi thao tac quan tri va su kien dang nhap.",
+    "totalEvents": "Tong su kien",
     "user": "Nguoi dung",
     "action": "Hanh dong",
     "target": "Doi tuong",

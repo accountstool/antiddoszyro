@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { api, unwrap } from "../api/client";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
+import { HeaderMetric, PageHeader } from "../components/ui/PageHeader";
 import { Spinner } from "../components/ui/Spinner";
 import { Table, TBody, TD, TH, THead, TR } from "../components/ui/Table";
 import type { DomainDetail, RequestLog, StatsOverview } from "../types/api";
@@ -101,6 +102,29 @@ export function DomainDetailPage() {
 
   return (
     <div className="space-y-6">
+      <PageHeader
+        title={detail.domain.name || t("domains.domain")}
+        subtitle={
+          detail.domain.name
+            ? `${detail.domain.originProtocol}://${detail.domain.originHost}:${detail.domain.originPort} | ${detail.domain.protectionMode}`
+            : t("domains.subtitle")
+        }
+        actions={
+          <>
+            <Button variant="secondary" onClick={() => sslMutation.mutate("issue")}>
+              {t("actions.issueSsl")}
+            </Button>
+            <Button variant="secondary" onClick={() => sslMutation.mutate("renew")}>
+              {t("actions.renewSsl")}
+            </Button>
+          </>
+        }
+      >
+        <HeaderMetric label={t("statistics.incoming")} value={String(stats.incomingRequests)} tone="accent" />
+        <HeaderMetric label={t("statistics.blocked")} value={String(stats.blockRequests)} tone="warm" />
+        <HeaderMetric label={t("statistics.uniqueIps")} value={String(stats.uniqueIps)} />
+      </PageHeader>
+
       {hasError ? (
         <Card className="border-amber-300/70 bg-amber-50/80 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100">
           <h2 className="text-lg font-bold">{t("messages.requestFailed")}</h2>
@@ -108,28 +132,9 @@ export function DomainDetailPage() {
         </Card>
       ) : null}
 
-      <Card>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-extrabold">{detail.domain.name}</h2>
-            <p className="mt-2 text-sm text-slate-500">
-              {detail.domain.originProtocol}://{detail.domain.originHost}:{detail.domain.originPort} · {detail.domain.protectionMode}
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Button variant="secondary" onClick={() => sslMutation.mutate("issue")}>
-              {t("actions.issueSsl")}
-            </Button>
-            <Button variant="secondary" onClick={() => sslMutation.mutate("renew")}>
-              {t("actions.renewSsl")}
-            </Button>
-          </div>
-        </div>
-      </Card>
-
       <div className="grid gap-6 xl:grid-cols-[1.2fr_1fr]">
         <Card>
-          <h3 className="text-lg font-bold">{t("domains.detailStats")}</h3>
+          <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("domains.detailStats")}</h3>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             {[
               [t("statistics.incoming"), stats.incomingRequests],
@@ -139,22 +144,25 @@ export function DomainDetailPage() {
               [t("statistics.uniqueIps"), stats.uniqueIps],
               [t("statistics.peakRps"), stats.peakRps]
             ].map(([label, value]) => (
-              <div key={String(label)} className="rounded-2xl bg-slate-50 px-4 py-4 dark:bg-slate-900">
+              <div
+                key={String(label)}
+                className="rounded-2xl border border-white/80 bg-white/70 px-4 py-4 dark:border-slate-800 dark:bg-slate-900/70"
+              >
                 <div className="text-xs uppercase tracking-[0.16em] text-slate-500">{label}</div>
-                <div className="mt-2 text-2xl font-bold">{value}</div>
+                <div className="mt-2 font-display text-2xl font-bold tracking-[-0.04em]">{value}</div>
               </div>
             ))}
           </div>
         </Card>
 
         <Card>
-          <h3 className="text-lg font-bold">{t("domains.rules")}</h3>
+          <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("domains.rules")}</h3>
           <div className="mt-4 space-y-3">
             {detail.rules.map((rule) => (
               <div key={rule.id || rule.name} className="rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-800">
                 <div className="font-semibold">{rule.name}</div>
                 <div className="mt-1 text-sm text-slate-500">
-                  {rule.type} · {rule.action} · {rule.pattern}
+                  {rule.type} | {rule.action} | {rule.pattern}
                 </div>
               </div>
             ))}
@@ -163,7 +171,7 @@ export function DomainDetailPage() {
       </div>
 
       <Card>
-        <h3 className="text-lg font-bold">{t("domains.recentLogs")}</h3>
+        <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{t("domains.recentLogs")}</h3>
         <Table>
           <THead>
             <TR>
