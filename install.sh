@@ -78,6 +78,11 @@ create_env_file() {
   fi
 }
 
+migrate_env_file() {
+  sed -i 's|^NGINX_SITES_AVAILABLE=/etc/nginx/sites-available/shieldpanel$|NGINX_SITES_AVAILABLE=/etc/nginx/shieldpanel/sites-available|' "${ENV_FILE}"
+  sed -i 's|^NGINX_SITES_ENABLED=/etc/nginx/sites-enabled/shieldpanel$|NGINX_SITES_ENABLED=/etc/nginx/shieldpanel/sites-enabled|' "${ENV_FILE}"
+}
+
 configure_database() {
   runuser -u postgres -- psql -tc "select 1 from pg_roles where rolname='${DB_USER}'" | grep -q 1 || runuser -u postgres -- psql -c "create user ${DB_USER} with password '${DB_PASSWORD}';"
   runuser -u postgres -- psql -tc "select 1 from pg_database where datname='${DB_NAME}'" | grep -q 1 || runuser -u postgres -- psql -c "create database ${DB_NAME} owner ${DB_USER};"
@@ -150,6 +155,7 @@ ensure_user
 prepare_paths
 sync_project
 create_env_file
+migrate_env_file
 configure_database
 build_frontend
 build_backend

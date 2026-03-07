@@ -5,6 +5,13 @@ APP_ROOT="${APP_ROOT:-/opt/shieldpanel}"
 ENV_FILE="${ENV_FILE:-/etc/shieldpanel/shieldpanel.env}"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+migrate_env_file() {
+  if [[ -f "${ENV_FILE}" ]]; then
+    sed -i 's|^NGINX_SITES_AVAILABLE=/etc/nginx/sites-available/shieldpanel$|NGINX_SITES_AVAILABLE=/etc/nginx/shieldpanel/sites-available|' "${ENV_FILE}"
+    sed -i 's|^NGINX_SITES_ENABLED=/etc/nginx/sites-enabled/shieldpanel$|NGINX_SITES_ENABLED=/etc/nginx/shieldpanel/sites-enabled|' "${ENV_FILE}"
+  fi
+}
+
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Run update.sh as root." >&2
   exit 1
@@ -15,6 +22,8 @@ rsync -a --delete \
   --exclude "frontend/node_modules" \
   --exclude "frontend/dist" \
   "${REPO_ROOT}/" "${APP_ROOT}/"
+
+migrate_env_file
 
 pushd "${APP_ROOT}/frontend" >/dev/null
 npm install
