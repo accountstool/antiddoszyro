@@ -256,7 +256,7 @@ export function DomainsPage() {
           <Field className="md:col-span-2" label={t("domains.notes")}>
             <Input value={editing.notes} onChange={(event) => setEditing((current) => ({ ...current, notes: event.target.value }))} />
           </Field>
-          <div className="md:col-span-2 flex flex-wrap gap-4 text-sm">
+          <div className="md:col-span-2 flex flex-wrap gap-4 text-sm text-slate-700 dark:text-slate-200">
             {[
               ["enabled", t("domains.enabled")],
               ["protectionEnabled", t("domains.protectionEnabled")],

@@ -15,15 +15,17 @@ export function Modal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/55 p-4 backdrop-blur-md">
-      <div className="w-full max-w-3xl rounded-[32px] border border-black/12 bg-neutral-100 p-6 shadow-panel dark:border-white/10 dark:bg-neutral-950">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/55 p-4 backdrop-blur-md">
+      <div className="grid min-h-full place-items-center py-2">
+        <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-3xl flex-col rounded-[32px] border border-black/12 bg-neutral-100 p-6 shadow-panel dark:border-white/10 dark:bg-neutral-950">
         <div className="mb-5 flex items-center justify-between">
           <h2 className="font-display text-2xl font-bold tracking-[-0.04em]">{title}</h2>
           <Button variant="ghost" onClick={onClose}>
             {t("actions.close")}
           </Button>
         </div>
-        {children}
+        <div className="panel-scroll min-h-0 overflow-y-auto pr-1">{children}</div>
+        </div>
       </div>
     </div>
   );
