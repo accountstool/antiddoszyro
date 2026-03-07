@@ -69,7 +69,8 @@
     "topAttackedDomain": "Top attacked domain",
     "topIps": "Top IPs",
     "topDomains": "Top domains",
-    "topReasons": "Top reasons"
+    "topReasons": "Top reasons",
+    "reasonBreakdown": "Reason distribution based on recent requests."
   },
   "domains": {
     "title": "Domains",

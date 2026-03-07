@@ -69,7 +69,8 @@
     "topAttackedDomain": "Domain bị tấn công nhiều nhất",
     "topIps": "IP nổi bật",
     "topDomains": "Domain nổi bật",
-    "topReasons": "Lý do nổi bật"
+    "topReasons": "Lý do nổi bật",
+    "reasonBreakdown": "Phân bố lý do dựa trên request gần đây."
   },
   "domains": {
     "title": "Quản lý domain",
