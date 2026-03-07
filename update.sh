@@ -9,15 +9,16 @@ migrate_env_file() {
   if [[ -f "${ENV_FILE}" ]]; then
     sed -i 's|^NGINX_SITES_AVAILABLE=/etc/nginx/sites-available/shieldpanel$|NGINX_SITES_AVAILABLE=/etc/nginx/shieldpanel/sites-available|' "${ENV_FILE}"
     sed -i 's|^NGINX_SITES_ENABLED=/etc/nginx/sites-enabled/shieldpanel$|NGINX_SITES_ENABLED=/etc/nginx/shieldpanel/sites-enabled|' "${ENV_FILE}"
+    sed -i 's|^NGINX_ZONES_PATH=/etc/nginx/conf.d/shieldpanel-zones.conf$|NGINX_ZONES_PATH=/etc/nginx/shieldpanel/zones.conf|' "${ENV_FILE}"
   fi
 }
 
 prepare_paths() {
   mkdir -p /var/log/shieldpanel /var/www/shieldpanel/acme /etc/nginx/shieldpanel/sites-available /etc/nginx/shieldpanel/sites-enabled
   rm -rf /etc/nginx/sites-enabled/shieldpanel
-  touch /etc/nginx/conf.d/shieldpanel-zones.conf
+  rm -f /etc/nginx/conf.d/shieldpanel-zones.conf
+  touch /etc/nginx/shieldpanel/zones.conf
   chown -R shieldpanel:shieldpanel /var/log/shieldpanel /var/www/shieldpanel /etc/nginx/shieldpanel
-  chown shieldpanel:shieldpanel /etc/nginx/conf.d/shieldpanel-zones.conf
 }
 
 install_sudoers() {
@@ -29,8 +30,9 @@ EOF
 
 install_nginx_base() {
   install -m 644 "${APP_ROOT}/deploy/nginx/includes/shieldpanel-http.conf" /etc/nginx/conf.d/shieldpanel-http.conf
-  touch /etc/nginx/conf.d/shieldpanel-zones.conf
-  chown shieldpanel:shieldpanel /etc/nginx/conf.d/shieldpanel-zones.conf
+  rm -f /etc/nginx/conf.d/shieldpanel-zones.conf
+  touch /etc/nginx/shieldpanel/zones.conf
+  chown shieldpanel:shieldpanel /etc/nginx/shieldpanel/zones.conf
   nginx -t
   systemctl restart nginx
 }

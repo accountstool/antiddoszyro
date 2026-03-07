@@ -168,7 +168,7 @@ func Load() Config {
 			ConfigPath:       env("NGINX_CONFIG_PATH", "/etc/nginx/nginx.conf"),
 			SitesAvailable:   env("NGINX_SITES_AVAILABLE", "/etc/nginx/shieldpanel/sites-available"),
 			SitesEnabled:     env("NGINX_SITES_ENABLED", "/etc/nginx/shieldpanel/sites-enabled"),
-			ZonesPath:        env("NGINX_ZONES_PATH", "/etc/nginx/conf.d/shieldpanel-zones.conf"),
+			ZonesPath:        env("NGINX_ZONES_PATH", "/etc/nginx/shieldpanel/zones.conf"),
 			TemplatesDir:     env("NGINX_TEMPLATES_DIR", filepath.Join(root, "deploy", "nginx", "templates")),
 			ACMEWebroot:      env("NGINX_ACME_WEBROOT", "/var/www/shieldpanel/acme"),
 			PanelUpstreamURL: env("PANEL_UPSTREAM_URL", "http://127.0.0.1:8080"),

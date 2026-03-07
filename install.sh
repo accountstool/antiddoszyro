@@ -59,9 +59,9 @@ ensure_user() {
 prepare_paths() {
   mkdir -p "${APP_ROOT}" "${APP_ROOT}/bin" "${ENV_DIR}" /var/log/shieldpanel /var/www/shieldpanel/acme /etc/nginx/shieldpanel/sites-available /etc/nginx/shieldpanel/sites-enabled
   rm -rf /etc/nginx/sites-enabled/shieldpanel
-  touch /etc/nginx/conf.d/shieldpanel-zones.conf
+  rm -f /etc/nginx/conf.d/shieldpanel-zones.conf
+  touch /etc/nginx/shieldpanel/zones.conf
   chown -R "${APP_USER}:${APP_GROUP}" /var/log/shieldpanel /var/www/shieldpanel /etc/nginx/shieldpanel
-  chown "${APP_USER}:${APP_GROUP}" /etc/nginx/conf.d/shieldpanel-zones.conf
 }
 
 sync_project() {
@@ -83,6 +83,7 @@ create_env_file() {
 migrate_env_file() {
   sed -i 's|^NGINX_SITES_AVAILABLE=/etc/nginx/sites-available/shieldpanel$|NGINX_SITES_AVAILABLE=/etc/nginx/shieldpanel/sites-available|' "${ENV_FILE}"
   sed -i 's|^NGINX_SITES_ENABLED=/etc/nginx/sites-enabled/shieldpanel$|NGINX_SITES_ENABLED=/etc/nginx/shieldpanel/sites-enabled|' "${ENV_FILE}"
+  sed -i 's|^NGINX_ZONES_PATH=/etc/nginx/conf.d/shieldpanel-zones.conf$|NGINX_ZONES_PATH=/etc/nginx/shieldpanel/zones.conf|' "${ENV_FILE}"
 }
 
 configure_database() {
@@ -135,8 +136,9 @@ EOF
 
 install_nginx_base() {
   install -m 644 "${APP_ROOT}/deploy/nginx/includes/shieldpanel-http.conf" /etc/nginx/conf.d/shieldpanel-http.conf
-  touch /etc/nginx/conf.d/shieldpanel-zones.conf
-  chown "${APP_USER}:${APP_GROUP}" /etc/nginx/conf.d/shieldpanel-zones.conf
+  rm -f /etc/nginx/conf.d/shieldpanel-zones.conf
+  touch /etc/nginx/shieldpanel/zones.conf
+  chown "${APP_USER}:${APP_GROUP}" /etc/nginx/shieldpanel/zones.conf
   nginx -t
   systemctl enable nginx redis-server postgresql
   systemctl restart nginx redis-server postgresql
