@@ -44,7 +44,12 @@
   "messages": {
     "saved": "Da luu",
     "deleted": "Da xoa",
-    "requestFailed": "Yeu cau that bai"
+    "requestFailed": "Yeu cau that bai",
+    "partialData": "Khong tai duoc day du du lieu. Dang hien du lieu mac dinh an toan.",
+    "statsUnavailable": "Thong ke tam thoi khong kha dung. Bo loc va du lieu mac dinh van duoc hien thi.",
+    "domainPartial": "Khong tai duoc day du chi tiet domain. Dang hien thi phan du lieu kha dung.",
+    "noDataYet": "Chua co du lieu.",
+    "noLogsYet": "Chua co log."
   },
   "login": {
     "title": "Dang nhap quan tri",

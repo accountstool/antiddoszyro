@@ -44,7 +44,12 @@
   "messages": {
     "saved": "Saved successfully",
     "deleted": "Deleted successfully",
-    "requestFailed": "Request failed"
+    "requestFailed": "Request failed",
+    "partialData": "Some data could not be loaded. Showing safe defaults.",
+    "statsUnavailable": "Statistics are unavailable right now. Filters and safe defaults are still shown.",
+    "domainPartial": "Some domain details could not be loaded. Showing available data only.",
+    "noDataYet": "No data yet.",
+    "noLogsYet": "No logs yet."
   },
   "login": {
     "title": "Admin Login",

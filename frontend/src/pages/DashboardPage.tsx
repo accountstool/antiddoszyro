@@ -10,6 +10,29 @@ import { StatCard } from "../components/ui/StatCard";
 import type { DashboardSummary, RankedMetric, TimePoint } from "../types/api";
 import { formatNumber, formatPercent } from "../utils/format";
 
+const emptySummary: DashboardSummary = {
+  healthy: true,
+  totalDomains: 0,
+  blockedToday: 0,
+  currentRps: 0,
+  currentBlockedPerSecond: 0,
+  topAttackedDomain: "",
+  topAttackingIp: "",
+  totalRequests24h: 0,
+  allowed24h: 0,
+  blocked24h: 0,
+  challenged24h: 0,
+  challengePassRate: 0
+};
+
+const emptyCharts = {
+  last24h: [] as TimePoint[],
+  last7d: [] as TimePoint[],
+  topIps: [] as RankedMetric[],
+  topDomains: [] as RankedMetric[],
+  topReasons: [] as RankedMetric[]
+};
+
 export function DashboardPage() {
   const { t } = useTranslation();
   const summaryQuery = useQuery({
@@ -36,11 +59,19 @@ export function DashboardPage() {
     );
   }
 
-  const summary = summaryQuery.data!;
-  const charts = chartsQuery.data!;
+  const summary = summaryQuery.data ?? emptySummary;
+  const charts = chartsQuery.data ?? emptyCharts;
+  const hasError = summaryQuery.isError || chartsQuery.isError;
 
   return (
     <div className="space-y-6">
+      {hasError ? (
+        <Card className="border-amber-300/70 bg-amber-50/80 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100">
+          <h2 className="text-lg font-bold">{t("messages.requestFailed")}</h2>
+          <p className="mt-1 text-sm opacity-80">{t("messages.partialData")}</p>
+        </Card>
+      ) : null}
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard label={t("dashboard.totalDomains")} value={formatNumber(summary.totalDomains)} />
         <StatCard label={t("dashboard.blockedToday")} tone="orange" value={formatNumber(summary.blockedToday)} />
@@ -75,10 +106,17 @@ export function DashboardPage() {
 }
 
 function MetricList({ title, items }: { title: string; items: RankedMetric[] }) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <h2 className="text-lg font-bold">{title}</h2>
       <div className="mt-4 space-y-3">
+        {items.length === 0 ? (
+          <div className="rounded-2xl bg-slate-50/80 px-4 py-3 text-sm text-slate-500 dark:bg-slate-900">
+            {t("messages.noDataYet")}
+          </div>
+        ) : null}
         {items.map((item) => (
           <div key={item.name} className="flex items-center justify-between rounded-2xl bg-slate-50/80 px-4 py-3 dark:bg-slate-900">
             <span className="truncate text-sm font-medium">{item.name}</span>

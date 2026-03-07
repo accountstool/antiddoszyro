@@ -130,8 +130,8 @@ func (s *Store) DashboardSummary(ctx context.Context, currentRPS int64, currentB
 		       count(*) filter (where decision='blocked'),
 		       count(*) filter (where decision='challenged'),
 		       coalesce(
-		        nullif(count(*) filter (where decision='challenge_passed'), 0)::numeric /
-		        nullif(count(*) filter (where decision='challenged'), 0)::numeric,
+		        (count(*) filter (where decision='challenge_passed'))::double precision /
+		        nullif((count(*) filter (where decision='challenged'))::double precision, 0),
 		        0
 		       )
 		from request_logs
@@ -169,11 +169,11 @@ func (s *Store) DashboardSummary(ctx context.Context, currentRPS int64, currentB
 func (s *Store) DashboardTimeSeries(ctx context.Context, hours int) ([]domain.TimePoint, error) {
 	rows, err := s.db.Query(ctx, `
 		select to_char(bucket, 'YYYY-MM-DD HH24:00') as label,
-		       coalesce(sum(case when decision='allowed' then count else 0 end), 0) as allowed,
-		       coalesce(sum(case when decision='blocked' then count else 0 end), 0) as blocked,
-		       coalesce(sum(case when decision='challenged' then count else 0 end), 0) as challenged
+		       coalesce(sum(case when decision='allowed' then request_count else 0 end), 0) as allowed,
+		       coalesce(sum(case when decision='blocked' then request_count else 0 end), 0) as blocked,
+		       coalesce(sum(case when decision='challenged' then request_count else 0 end), 0) as challenged
 		from (
-			select date_trunc('hour', created_at) as bucket, decision, count(*) as count
+			select date_trunc('hour', created_at) as bucket, decision, count(*) as request_count
 			from request_logs
 			where created_at >= now() - make_interval(hours => $1)
 			group by bucket, decision
@@ -216,8 +216,8 @@ func (s *Store) StatsOverview(ctx context.Context, filters LogFilters) (domain.S
 			count(*) filter (where decision='blocked'),
 			count(*) filter (where decision='challenged'),
 			coalesce(
-				nullif(count(*) filter (where decision='challenge_passed'), 0)::numeric /
-				nullif(count(*) filter (where decision='challenged'), 0)::numeric,
+				(count(*) filter (where decision='challenge_passed'))::double precision /
+				nullif((count(*) filter (where decision='challenged'))::double precision, 0),
 				0
 			),
 			count(distinct client_ip)
@@ -284,11 +284,11 @@ func (s *Store) StatsOverview(ctx context.Context, filters LogFilters) (domain.S
 
 	rows, err := s.db.Query(ctx, `
 		select to_char(bucket, 'YYYY-MM-DD HH24:00') as label,
-		       sum(case when decision='allowed' then count else 0 end) as allowed,
-		       sum(case when decision='blocked' then count else 0 end) as blocked,
-		       sum(case when decision='challenged' then count else 0 end) as challenged
+		       coalesce(sum(case when decision='allowed' then request_count else 0 end), 0) as allowed,
+		       coalesce(sum(case when decision='blocked' then request_count else 0 end), 0) as blocked,
+		       coalesce(sum(case when decision='challenged' then request_count else 0 end), 0) as challenged
 		from (
-			select date_trunc('hour', created_at) as bucket, decision, count(*) as count
+			select date_trunc('hour', created_at) as bucket, decision, count(*) as request_count
 			from request_logs `+where+`
 			group by bucket, decision
 		) t

@@ -24,6 +24,10 @@ export function TH({ children }: PropsWithChildren) {
   return <th className="px-4 py-3 font-semibold">{children}</th>;
 }
 
-export function TD({ children, className = "" }: PropsWithChildren<{ className?: string }>) {
-  return <td className={`px-4 py-3 align-top ${className}`}>{children}</td>;
+export function TD({ children, className = "", colSpan }: PropsWithChildren<{ className?: string; colSpan?: number }>) {
+  return (
+    <td className={`px-4 py-3 align-top ${className}`} colSpan={colSpan}>
+      {children}
+    </td>
+  );
 }

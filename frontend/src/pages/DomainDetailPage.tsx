@@ -11,6 +11,53 @@ import { Table, TBody, TD, TH, THead, TR } from "../components/ui/Table";
 import type { DomainDetail, RequestLog, StatsOverview } from "../types/api";
 import { formatDate } from "../utils/format";
 
+const emptyDomainDetail: DomainDetail = {
+  domain: {
+    id: "",
+    name: "",
+    originHost: "",
+    originPort: 0,
+    originProtocol: "http",
+    originServerName: "",
+    enabled: false,
+    protectionEnabled: false,
+    protectionMode: "off",
+    challengeMode: "off",
+    cloudflareMode: false,
+    sslAutoIssue: false,
+    sslEnabled: false,
+    forceHttps: false,
+    rateLimitRps: 0,
+    rateLimitBurst: 0,
+    badBotMode: false,
+    headerValidation: false,
+    jsChallengeEnabled: false,
+    allowedMethods: [],
+    notes: "",
+    createdAt: "",
+    updatedAt: ""
+  },
+  rules: [],
+  nginxStatus: "unknown"
+};
+
+const emptyDomainStats: StatsOverview = {
+  incomingRequests: 0,
+  allowedRequests: 0,
+  blockRequests: 0,
+  challengedRequests: 0,
+  challengePassRate: 0,
+  uniqueIps: 0,
+  peakRps: 0,
+  peakTime: "",
+  topIps: [],
+  topUserAgents: [],
+  topDomains: [],
+  topReasons: [],
+  topCountries: [],
+  requestSeries: []
+};
+
 export function DomainDetailPage() {
   const { t } = useTranslation();
   const { id } = useParams();
@@ -47,12 +94,20 @@ export function DomainDetailPage() {
     );
   }
 
-  const detail = detailQuery.data!;
-  const stats = statsQuery.data!;
-  const logs = logsQuery.data!;
+  const detail = detailQuery.data ?? emptyDomainDetail;
+  const stats = statsQuery.data ?? emptyDomainStats;
+  const logs = logsQuery.data ?? [];
+  const hasError = detailQuery.isError || statsQuery.isError || logsQuery.isError;
 
   return (
     <div className="space-y-6">
+      {hasError ? (
+        <Card className="border-amber-300/70 bg-amber-50/80 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100">
+          <h2 className="text-lg font-bold">{t("messages.requestFailed")}</h2>
+          <p className="mt-1 text-sm opacity-80">{t("messages.domainPartial")}</p>
+        </Card>
+      ) : null}
+
       <Card>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -120,6 +175,13 @@ export function DomainDetailPage() {
             </TR>
           </THead>
           <TBody>
+            {logs.length === 0 ? (
+              <TR>
+                <TD colSpan={5} className="text-center text-slate-500">
+                  {t("messages.noLogsYet")}
+                </TD>
+              </TR>
+            ) : null}
             {logs.map((item) => (
               <TR key={item.id}>
                 <TD>{formatDate(item.createdAt)}</TD>

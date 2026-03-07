@@ -13,6 +13,23 @@ import { Table, TBody, TD, TH, THead, TR } from "../components/ui/Table";
 import type { Domain, RequestLog, StatsOverview } from "../types/api";
 import { formatDate, formatNumber, formatPercent } from "../utils/format";
 
+const emptyStats: StatsOverview = {
+  incomingRequests: 0,
+  allowedRequests: 0,
+  blockRequests: 0,
+  challengedRequests: 0,
+  challengePassRate: 0,
+  uniqueIps: 0,
+  peakRps: 0,
+  peakTime: "",
+  topIps: [],
+  topUserAgents: [],
+  topDomains: [],
+  topReasons: [],
+  topCountries: [],
+  requestSeries: []
+};
+
 export function StatisticsPage() {
   const { t } = useTranslation();
   const [domainId, setDomainId] = useState("");
@@ -46,11 +63,19 @@ export function StatisticsPage() {
     );
   }
 
-  const stats = statsQuery.data!;
-  const logs = logsQuery.data!;
+  const stats = statsQuery.data ?? emptyStats;
+  const logs = logsQuery.data ?? [];
+  const hasError = statsQuery.isError || logsQuery.isError || domainsQuery.isError;
 
   return (
     <div className="space-y-6">
+      {hasError ? (
+        <Card className="border-amber-300/70 bg-amber-50/80 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100">
+          <h2 className="text-lg font-bold">{t("messages.requestFailed")}</h2>
+          <p className="mt-1 text-sm opacity-80">{t("messages.statsUnavailable")}</p>
+        </Card>
+      ) : null}
+
       <Card className="grid gap-4 md:grid-cols-4">
         <Select value={domainId} onChange={(event) => setDomainId(event.target.value)}>
           <option value="">{t("statistics.allDomains")}</option>
@@ -109,6 +134,13 @@ export function StatisticsPage() {
             </TR>
           </THead>
           <TBody>
+            {logs.length === 0 ? (
+              <TR>
+                <TD colSpan={6} className="text-center text-slate-500">
+                  {t("messages.noLogsYet")}
+                </TD>
+              </TR>
+            ) : null}
             {logs.map((item) => (
               <TR key={item.id}>
                 <TD>{formatDate(item.createdAt)}</TD>
