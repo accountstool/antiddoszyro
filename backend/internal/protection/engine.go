@@ -58,16 +58,16 @@ func (e *Engine) Evaluate(ctx context.Context, input RequestContext) (Decision, 
 		}, nil
 	}
 
-	clientIP := e.resolveClientIP(item, input)
+	clientIP := e.ResolveClientIP(item, input)
 	countryCode := input.Headers["cf-ipcountry"]
 	decision := Decision{
-		Action:         ActionAllow,
-		Reason:         "ok",
-		StatusCode:     http.StatusNoContent,
-		Domain:         item,
-		ClientIP:       clientIP,
-		CountryCode:    countryCode,
-		OccurredAt:     time.Now(),
+		Action:      ActionAllow,
+		Reason:      "ok",
+		StatusCode:  http.StatusNoContent,
+		Domain:      item,
+		ClientIP:    clientIP,
+		CountryCode: countryCode,
+		OccurredAt:  time.Now(),
 	}
 	defer func() {
 		decision.ResponseTimeMS = int(time.Since(started).Milliseconds())
@@ -172,7 +172,7 @@ func (e *Engine) Evaluate(ctx context.Context, input RequestContext) (Decision, 
 		return decision, nil
 	}
 
-	if decision.Score >= 4 || (item.ChallengeMode != domain.ChallengeOff && !e.hasValidClearance(item, clientIP, input.Cookies)) {
+	if decision.Score >= 4 {
 		decision.Action = ActionChallenge
 		decision.StatusCode = http.StatusUnauthorized
 		decision.ChallengeMode = e.resolveChallengeMode(item)
@@ -180,6 +180,14 @@ func (e *Engine) Evaluate(ctx context.Context, input RequestContext) (Decision, 
 			decision.Reason = "challenge_required"
 		}
 		e.registerOffense(ctx, &item.ID, item.Name, clientIP, decision.Reason)
+		return decision, nil
+	}
+
+	if item.ChallengeMode != domain.ChallengeOff && !e.hasValidClearance(item, clientIP, input.Cookies) {
+		decision.Action = ActionChallenge
+		decision.StatusCode = http.StatusUnauthorized
+		decision.ChallengeMode = e.resolveChallengeMode(item)
+		decision.Reason = "challenge_required"
 		return decision, nil
 	}
 
@@ -192,6 +200,20 @@ func (e *Engine) IssueClearance(domainName string, clientIP string) string {
 
 func (e *Engine) VerifyClearance(domainName string, clientIP string, token string) bool {
 	return e.signer.Verify(token, domainName, clientIP, time.Now())
+}
+
+func (e *Engine) ResolveClientIP(item domain.Domain, input RequestContext) string {
+	return e.resolveClientIP(item, input)
+}
+
+func (e *Engine) ClearMitigationState(ctx context.Context, domainName string, clientIP string) {
+	keys := []string{
+		e.cfg.Redis.KeyPrefix + "offense:" + domainName + ":" + clientIP,
+		e.cfg.Redis.KeyPrefix + "ban:" + domainName + ":" + clientIP,
+	}
+	if err := e.store.Redis().Del(ctx, keys...).Err(); err != nil {
+		e.logger.Warn("failed to clear mitigation state", "error", err, "domain", domainName, "client_ip", clientIP)
+	}
 }
 
 func (e *Engine) ResolveDomain(ctx context.Context, host string) (domain.Domain, error) {

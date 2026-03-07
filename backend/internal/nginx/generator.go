@@ -26,23 +26,23 @@ type Manager struct {
 }
 
 type siteTemplateData struct {
-	Domain          domain.Domain
-	ZoneName        string
-	ConnZoneName    string
-	OriginURL       string
-	PanelUpstream   string
-	ACMEWebroot     string
-	VerifyRoute     string
-	ChallengeRoute  string
-	BlockRoute      string
-	AccessLog       string
-	ErrorLog        string
+	Domain         domain.Domain
+	ZoneName       string
+	ConnZoneName   string
+	OriginURL      string
+	PanelUpstream  string
+	ACMEWebroot    string
+	VerifyRoute    string
+	ChallengeRoute string
+	BlockRoute     string
+	AccessLog      string
+	ErrorLog       string
 }
 
 func NewManager(cfg config.NginxConfig, logger *slog.Logger) *Manager {
 	return &Manager{
-		cfg:    cfg,
-		logger: logger,
+		cfg:       cfg,
+		logger:    logger,
 		siteTmpl:  template.Must(template.New("site").Parse(siteTemplate)),
 		zonesTmpl: template.Must(template.New("zones").Funcs(template.FuncMap{"safeName": safeName}).Parse(zonesTemplate)),
 	}
@@ -256,6 +256,9 @@ server {
         proxy_set_header X-Original-Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header CF-Connecting-IP $http_cf_connecting_ip;
+        proxy_set_header CF-IPCountry $http_cf_ipcountry;
     }
 
 {{- if and .Domain.SSLEnabled .Domain.ForceHTTPS }}
@@ -288,6 +291,9 @@ server {
         proxy_set_header X-Original-Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header CF-Connecting-IP $http_cf_connecting_ip;
+        proxy_set_header CF-IPCountry $http_cf_ipcountry;
     }
 
     {{ template "protected" . }}

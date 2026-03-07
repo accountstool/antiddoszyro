@@ -63,6 +63,13 @@ func (a *API) ProtectionBlock(c *gin.Context) {
 }
 
 func (a *API) ProtectionVerify(c *gin.Context) {
+	headers := map[string]string{}
+	for key, values := range c.Request.Header {
+		if len(values) > 0 {
+			headers[strings.ToLower(key)] = values[0]
+		}
+	}
+
 	host := strings.ToLower(strings.TrimSpace(c.PostForm("host")))
 	if host == "" {
 		host = strings.ToLower(strings.TrimSpace(c.GetHeader("X-Original-Host")))
@@ -80,7 +87,12 @@ func (a *API) ProtectionVerify(c *gin.Context) {
 	if clientIP == "" {
 		clientIP = c.ClientIP()
 	}
+	clientIP = a.engine.ResolveClientIP(item, protection.RequestContext{
+		Headers:  headers,
+		RemoteIP: clientIP,
+	})
 	token := a.engine.IssueClearance(item.Name, clientIP)
+	a.engine.ClearMitigationState(c.Request.Context(), item.Name, clientIP)
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("shieldpanel_clearance", token, int(a.cfg.Security.ChallengeGraceTTL.Seconds()), "/", "", a.cfg.Auth.CookieSecure, false)
 	a.sink.Publish(domain.RequestLogInput{
