@@ -22,7 +22,7 @@ require_root() {
 
 install_base_packages() {
   apt-get update
-  apt-get install -y ca-certificates curl gnupg lsb-release rsync unzip build-essential nginx redis-server postgresql postgresql-contrib certbot
+  apt-get install -y ca-certificates curl gnupg lsb-release rsync unzip build-essential sudo nginx redis-server postgresql postgresql-contrib certbot
 }
 
 install_node() {
@@ -59,7 +59,9 @@ ensure_user() {
 prepare_paths() {
   mkdir -p "${APP_ROOT}" "${APP_ROOT}/bin" "${ENV_DIR}" /var/log/shieldpanel /var/www/shieldpanel/acme /etc/nginx/shieldpanel/sites-available /etc/nginx/shieldpanel/sites-enabled
   rm -rf /etc/nginx/sites-enabled/shieldpanel
-  chown -R "${APP_USER}:${APP_GROUP}" /var/log/shieldpanel /var/www/shieldpanel
+  touch /etc/nginx/conf.d/shieldpanel-zones.conf
+  chown -R "${APP_USER}:${APP_GROUP}" /var/log/shieldpanel /var/www/shieldpanel /etc/nginx/shieldpanel
+  chown "${APP_USER}:${APP_GROUP}" /etc/nginx/conf.d/shieldpanel-zones.conf
 }
 
 sync_project() {
@@ -124,9 +126,17 @@ install_systemd() {
   systemctl enable shieldpanel.service
 }
 
+install_sudoers() {
+  cat >/etc/sudoers.d/shieldpanel-nginx <<'EOF'
+shieldpanel ALL=(root) NOPASSWD: /usr/sbin/nginx -t -c /etc/nginx/nginx.conf, /usr/sbin/nginx -s reload
+EOF
+  chmod 440 /etc/sudoers.d/shieldpanel-nginx
+}
+
 install_nginx_base() {
   install -m 644 "${APP_ROOT}/deploy/nginx/includes/shieldpanel-http.conf" /etc/nginx/conf.d/shieldpanel-http.conf
   touch /etc/nginx/conf.d/shieldpanel-zones.conf
+  chown "${APP_USER}:${APP_GROUP}" /etc/nginx/conf.d/shieldpanel-zones.conf
   nginx -t
   systemctl enable nginx redis-server postgresql
   systemctl restart nginx redis-server postgresql
@@ -166,6 +176,7 @@ build_frontend
 build_backend
 run_database_tasks
 install_systemd
+install_sudoers
 install_nginx_base
 start_services
 print_summary

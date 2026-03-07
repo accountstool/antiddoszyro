@@ -12,6 +12,29 @@ migrate_env_file() {
   fi
 }
 
+prepare_paths() {
+  mkdir -p /var/log/shieldpanel /var/www/shieldpanel/acme /etc/nginx/shieldpanel/sites-available /etc/nginx/shieldpanel/sites-enabled
+  rm -rf /etc/nginx/sites-enabled/shieldpanel
+  touch /etc/nginx/conf.d/shieldpanel-zones.conf
+  chown -R shieldpanel:shieldpanel /var/log/shieldpanel /var/www/shieldpanel /etc/nginx/shieldpanel
+  chown shieldpanel:shieldpanel /etc/nginx/conf.d/shieldpanel-zones.conf
+}
+
+install_sudoers() {
+  cat >/etc/sudoers.d/shieldpanel-nginx <<'EOF'
+shieldpanel ALL=(root) NOPASSWD: /usr/sbin/nginx -t -c /etc/nginx/nginx.conf, /usr/sbin/nginx -s reload
+EOF
+  chmod 440 /etc/sudoers.d/shieldpanel-nginx
+}
+
+install_nginx_base() {
+  install -m 644 "${APP_ROOT}/deploy/nginx/includes/shieldpanel-http.conf" /etc/nginx/conf.d/shieldpanel-http.conf
+  touch /etc/nginx/conf.d/shieldpanel-zones.conf
+  chown shieldpanel:shieldpanel /etc/nginx/conf.d/shieldpanel-zones.conf
+  nginx -t
+  systemctl restart nginx
+}
+
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Run update.sh as root." >&2
   exit 1
@@ -24,6 +47,8 @@ rsync -a --delete \
   "${REPO_ROOT}/" "${APP_ROOT}/"
 
 migrate_env_file
+prepare_paths
+install_sudoers
 
 pushd "${APP_ROOT}/frontend" >/dev/null
 echo "[ShieldPanel] Installing frontend dependencies..."
@@ -45,5 +70,6 @@ source "${ENV_FILE}"
 set +a
 echo "[ShieldPanel] Running database migrations..."
 "${APP_ROOT}/bin/shieldpanel-migrate"
+install_nginx_base
 systemctl restart shieldpanel.service
 echo "ShieldPanel updated."

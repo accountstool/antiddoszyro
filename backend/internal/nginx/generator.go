@@ -188,7 +188,10 @@ func (m *Manager) rollback(previous map[string][]byte) {
 }
 
 func (m *Manager) validate(ctx context.Context) error {
-	cmd := exec.CommandContext(ctx, m.cfg.BinaryPath, "-t", "-c", m.cfg.ConfigPath)
+	cmd, err := m.execWithPrivileges(ctx, "-t", "-c", m.cfg.ConfigPath)
+	if err != nil {
+		return err
+	}
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("nginx validation failed: %w: %s", err, string(output))
@@ -197,12 +200,26 @@ func (m *Manager) validate(ctx context.Context) error {
 }
 
 func (m *Manager) reload(ctx context.Context) error {
-	cmd := exec.CommandContext(ctx, m.cfg.BinaryPath, "-s", "reload")
+	cmd, err := m.execWithPrivileges(ctx, "-s", "reload")
+	if err != nil {
+		return err
+	}
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("nginx reload failed: %w: %s", err, string(output))
 	}
 	return nil
+}
+
+func (m *Manager) execWithPrivileges(ctx context.Context, args ...string) (*exec.Cmd, error) {
+	if os.Geteuid() == 0 {
+		return exec.CommandContext(ctx, m.cfg.BinaryPath, args...), nil
+	}
+	if _, err := exec.LookPath("sudo"); err != nil {
+		return nil, fmt.Errorf("nginx command requires elevated privileges and sudo is not available: %w", err)
+	}
+	sudoArgs := append([]string{m.cfg.BinaryPath}, args...)
+	return exec.CommandContext(ctx, "sudo", sudoArgs...), nil
 }
 
 func safeName(input string) string {

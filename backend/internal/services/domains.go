@@ -65,9 +65,11 @@ func (s *DomainService) Create(ctx context.Context, actor *domain.User, input st
 		return domain.Domain{}, err
 	}
 	if err := s.store.ReplaceDomainRules(ctx, item.ID, rules); err != nil {
+		_ = s.store.DeleteDomain(ctx, item.ID)
 		return domain.Domain{}, err
 	}
 	if err := s.syncNginx(ctx); err != nil {
+		_ = s.store.DeleteDomain(ctx, item.ID)
 		return domain.Domain{}, err
 	}
 	details, _ := json.Marshal(map[string]any{"domain": item.Name, "origin": item.OriginHost, "port": item.OriginPort})
