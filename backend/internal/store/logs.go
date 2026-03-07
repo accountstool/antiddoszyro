@@ -46,7 +46,7 @@ func (s *Store) InsertRequestLogs(ctx context.Context, inputs []domain.RequestLo
 			insert into traffic_rollups (
 				window_start, granularity, domain_id, domain_name, decision, block_reason, request_count
 			)
-			values (date_trunc('hour', $1), 'hour', $2, $3, $4, $5, 1)
+			values (date_trunc('hour', $1::timestamptz), 'hour', $2, $3, $4, $5, 1)
 			on conflict (window_start, granularity, domain_id, decision, block_reason)
 			do update set request_count = traffic_rollups.request_count + 1
 		`, item.OccurredAt, nullableUUID(item.DomainID), item.DomainName, item.Decision, item.BlockReason); err != nil {
