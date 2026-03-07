@@ -32,8 +32,9 @@ type siteTemplateData struct {
 	OriginURL       string
 	PanelUpstream   string
 	ACMEWebroot     string
-	ChallengeRoute  string
 	VerifyRoute     string
+	ChallengeRoute  string
+	BlockRoute      string
 	AccessLog       string
 	ErrorLog        string
 }
@@ -118,8 +119,9 @@ func (m *Manager) writeSite(item domain.Domain, previous map[string][]byte) erro
 		OriginURL:      fmt.Sprintf("%s://%s:%d", item.OriginProtocol, item.OriginHost, item.OriginPort),
 		PanelUpstream:  strings.TrimSuffix(m.cfg.PanelUpstreamURL, "/"),
 		ACMEWebroot:    m.cfg.ACMEWebroot,
-		ChallengeRoute: "/__shieldpanel_verify",
 		VerifyRoute:    "/__shieldpanel_verify",
+		ChallengeRoute: "/__shieldpanel_challenge",
+		BlockRoute:     "/__shieldpanel_block",
 		AccessLog:      fmt.Sprintf("/var/log/nginx/shieldpanel-%s.access.log", safeName(item.Name)),
 		ErrorLog:       fmt.Sprintf("/var/log/nginx/shieldpanel-%s.error.log", safeName(item.Name)),
 	}
@@ -302,8 +304,8 @@ location / {
     auth_request_set $shieldpanel_reason $upstream_http_x_shieldpanel_reason;
     auth_request_set $shieldpanel_challenge $upstream_http_x_shieldpanel_challenge;
     add_header Set-Cookie $shieldpanel_set_cookie always;
-    error_page 401 = @shieldpanel_challenge;
-    error_page 403 = @shieldpanel_block;
+    error_page 401 = {{ .ChallengeRoute }};
+    error_page 403 = {{ .BlockRoute }};
 
     proxy_http_version 1.1;
     proxy_set_header Host $host;
@@ -338,7 +340,7 @@ location = /__shieldpanel_check {
     proxy_set_header CF-IPCountry $http_cf_ipcountry;
 }
 
-location @shieldpanel_challenge {
+location = {{ .ChallengeRoute }} {
     internal;
     proxy_pass {{ .PanelUpstream }}/internal/protection/challenge;
     proxy_set_header X-Original-Host $host;
@@ -351,7 +353,7 @@ location @shieldpanel_challenge {
     proxy_set_header Accept-Language $http_accept_language;
 }
 
-location @shieldpanel_block {
+location = {{ .BlockRoute }} {
     internal;
     proxy_pass {{ .PanelUpstream }}/internal/protection/block;
     proxy_set_header X-Original-Host $host;
