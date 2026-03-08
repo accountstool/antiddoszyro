@@ -70,7 +70,7 @@ func (m *Manager) Sync(ctx context.Context, domains []domain.Domain) error {
 	for _, item := range domains {
 		path := filepath.Join(m.cfg.SitesAvailable, item.Name+".conf")
 		expected[path] = struct{}{}
-		if err := m.writeSite(item, previousFiles); err != nil {
+		if err := m.writeSite(ctx, item, previousFiles); err != nil {
 			m.rollback(previousFiles)
 			return err
 		}
@@ -112,12 +112,12 @@ func (m *Manager) writeZones(domains []domain.Domain, previous map[string][]byte
 	return m.writeFile(path, buf.Bytes(), previous)
 }
 
-func (m *Manager) writeSite(item domain.Domain, previous map[string][]byte) error {
+func (m *Manager) writeSite(ctx context.Context, item domain.Domain, previous map[string][]byte) error {
 	path := filepath.Join(m.cfg.SitesAvailable, item.Name+".conf")
 	var buf bytes.Buffer
 	certPath := filepath.Join("/etc/letsencrypt/live", item.Name, "fullchain.pem")
 	keyPath := filepath.Join("/etc/letsencrypt/live", item.Name, "privkey.pem")
-	hasCertificate := fileExists(certPath) && fileExists(keyPath)
+	hasCertificate := m.pathExists(ctx, certPath) && m.pathExists(ctx, keyPath)
 	if item.SSLEnabled && !hasCertificate {
 		m.logger.Warn("ssl enabled for domain without certificate, falling back to http only", "domain", item.Name, "cert_path", certPath)
 	}
@@ -244,9 +244,25 @@ func safeName(input string) string {
 	return safe
 }
 
-func fileExists(path string) bool {
+func (m *Manager) pathExists(ctx context.Context, path string) bool {
 	info, err := os.Lstat(path)
-	return err == nil && !info.IsDir()
+	if err == nil {
+		return !info.IsDir()
+	}
+	if os.IsNotExist(err) {
+		return false
+	}
+	if os.Geteuid() == 0 {
+		return false
+	}
+	if _, lookErr := exec.LookPath("sudo"); lookErr != nil {
+		return false
+	}
+	cmd := exec.CommandContext(ctx, "sudo", "/usr/bin/test", "-e", path)
+	if err := cmd.Run(); err == nil {
+		return true
+	}
+	return false
 }
 
 const zonesTemplate = `

@@ -129,7 +129,7 @@ install_systemd() {
 
 install_sudoers() {
   cat >/etc/sudoers.d/shieldpanel-nginx <<'EOF'
-shieldpanel ALL=(root) NOPASSWD: /usr/sbin/nginx -t -c /etc/nginx/nginx.conf, /usr/sbin/nginx -s reload
+shieldpanel ALL=(root) NOPASSWD: /usr/sbin/nginx -t -c /etc/nginx/nginx.conf, /usr/sbin/nginx -s reload, /usr/bin/test -e /etc/letsencrypt/live/*/fullchain.pem, /usr/bin/test -e /etc/letsencrypt/live/*/privkey.pem
 EOF
   chmod 440 /etc/sudoers.d/shieldpanel-nginx
 }
