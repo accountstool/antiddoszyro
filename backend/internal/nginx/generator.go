@@ -37,6 +37,9 @@ type siteTemplateData struct {
 	BlockRoute     string
 	AccessLog      string
 	ErrorLog       string
+	HasCertificate bool
+	CertPath       string
+	KeyPath        string
 }
 
 func NewManager(cfg config.NginxConfig, logger *slog.Logger) *Manager {
@@ -112,6 +115,12 @@ func (m *Manager) writeZones(domains []domain.Domain, previous map[string][]byte
 func (m *Manager) writeSite(item domain.Domain, previous map[string][]byte) error {
 	path := filepath.Join(m.cfg.SitesAvailable, item.Name+".conf")
 	var buf bytes.Buffer
+	certPath := filepath.Join("/etc/letsencrypt/live", item.Name, "fullchain.pem")
+	keyPath := filepath.Join("/etc/letsencrypt/live", item.Name, "privkey.pem")
+	hasCertificate := fileExists(certPath) && fileExists(keyPath)
+	if item.SSLEnabled && !hasCertificate {
+		m.logger.Warn("ssl enabled for domain without certificate, falling back to http only", "domain", item.Name, "cert_path", certPath)
+	}
 	data := siteTemplateData{
 		Domain:         item,
 		ZoneName:       "sp_" + safeName(item.Name),
@@ -124,6 +133,9 @@ func (m *Manager) writeSite(item domain.Domain, previous map[string][]byte) erro
 		BlockRoute:     "/__shieldpanel_block",
 		AccessLog:      fmt.Sprintf("/var/log/nginx/shieldpanel-%s.access.log", safeName(item.Name)),
 		ErrorLog:       fmt.Sprintf("/var/log/nginx/shieldpanel-%s.error.log", safeName(item.Name)),
+		HasCertificate: hasCertificate,
+		CertPath:       certPath,
+		KeyPath:        keyPath,
 	}
 	if err := m.siteTmpl.Execute(&buf, data); err != nil {
 		return err
@@ -232,6 +244,11 @@ func safeName(input string) string {
 	return safe
 }
 
+func fileExists(path string) bool {
+	info, err := os.Stat(path)
+	return err == nil && !info.IsDir()
+}
+
 const zonesTemplate = `
 {{- range .Domains }}
 limit_req_zone $binary_remote_addr zone=sp_{{ safeName .Name }}:20m rate={{ .RateLimitRPS }}r/s;
@@ -261,7 +278,7 @@ server {
         proxy_set_header CF-IPCountry $http_cf_ipcountry;
     }
 
-{{- if and .Domain.SSLEnabled .Domain.ForceHTTPS }}
+{{- if and .HasCertificate .Domain.ForceHTTPS }}
     location / {
         return 301 https://$host$request_uri;
     }
@@ -270,7 +287,7 @@ server {
 {{- end }}
 }
 
-{{- if .Domain.SSLEnabled }}
+{{- if .HasCertificate }}
 server {
     listen 443 ssl http2;
     server_name {{ .Domain.Name }};
@@ -278,8 +295,8 @@ server {
     error_log {{ .ErrorLog }} warn;
     client_max_body_size 64m;
 
-    ssl_certificate /etc/letsencrypt/live/{{ .Domain.Name }}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/{{ .Domain.Name }}/privkey.pem;
+    ssl_certificate {{ .CertPath }};
+    ssl_certificate_key {{ .KeyPath }};
     ssl_session_timeout 1d;
     ssl_session_cache shared:SSL:10m;
     ssl_protocols TLSv1.2 TLSv1.3;
