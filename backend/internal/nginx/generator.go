@@ -267,8 +267,17 @@ func (m *Manager) pathExists(ctx context.Context, path string) bool {
 
 const zonesTemplate = `
 {{- range .Domains }}
+{{- if .CloudflareMode }}
+map $http_cf_connecting_ip $spk_{{ safeName .Name }} {
+    default $binary_remote_addr;
+    "~.+" $http_cf_connecting_ip;
+}
+limit_req_zone $spk_{{ safeName .Name }} zone=sp_{{ safeName .Name }}:20m rate={{ .RateLimitRPS }}r/s;
+limit_conn_zone $spk_{{ safeName .Name }} zone=spc_{{ safeName .Name }}:20m;
+{{- else }}
 limit_req_zone $binary_remote_addr zone=sp_{{ safeName .Name }}:20m rate={{ .RateLimitRPS }}r/s;
 limit_conn_zone $binary_remote_addr zone=spc_{{ safeName .Name }}:20m;
+{{- end }}
 {{- end }}
 `
 

@@ -11,16 +11,52 @@ func ChallengePage(language string, host string, originalURI string, mode string
 	description := "Complete the browser check to continue."
 	buttonLabel := "Continue"
 	waitText := "Verifying your browser..."
+	helpText := "This step should complete automatically. If it does not, continue manually."
 	if strings.HasPrefix(strings.ToLower(language), "vi") {
 		title = "Xác thực ShieldPanel"
 		description = "Hoàn tất kiểm tra trình duyệt để tiếp tục."
 		buttonLabel = "Tiếp tục"
 		waitText = "Đang xác minh trình duyệt..."
+		helpText = "Trang này sẽ tự hoàn tất sau vài giây. Nếu chưa qua được, hãy bấm tiếp tục thủ công."
 	}
+
 	autoSubmit := ""
 	if mode == "js" {
-		autoSubmit = `<script>setTimeout(function(){ document.getElementById('challenge-form').submit(); }, 1800);</script>`
+		autoSubmit = fmt.Sprintf(`<script>
+(function () {
+  var form = document.getElementById("challenge-form");
+  var status = document.getElementById("challenge-status");
+  var attempts = 0;
+  function submitOnce() {
+    if (!form) {
+      return;
+    }
+    try {
+      form.requestSubmit();
+    } catch (error) {
+      form.submit();
+    }
+  }
+  function retry() {
+    attempts += 1;
+    if (attempts > 2) {
+      if (status) {
+        status.textContent = %q;
+      }
+      return;
+    }
+    if (status) {
+      status.textContent = %q + " (" + attempts + "/2)";
+    }
+    submitOnce();
+    window.setTimeout(retry, 2500);
+  }
+  window.setTimeout(submitOnce, 900);
+  window.setTimeout(retry, 3800);
+})();
+</script>`, template.JSEscapeString(helpText), template.JSEscapeString(waitText))
 	}
+
 	return fmt.Sprintf(`<!doctype html>
 <html lang="%s">
 <head>
@@ -41,7 +77,7 @@ func ChallengePage(language string, host string, originalURI string, mode string
     <span class="badge">ShieldPanel</span>
     <h1>%s</h1>
     <p>%s</p>
-    <p><strong>%s</strong></p>
+    <p id="challenge-status"><strong>%s</strong></p>
     <form id="challenge-form" method="post" action="/__shieldpanel_verify">
       <input type="hidden" name="host" value="%s">
       <input type="hidden" name="redirect_uri" value="%s">
