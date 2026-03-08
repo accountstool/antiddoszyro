@@ -87,13 +87,31 @@ export function DomainsPage() {
   const saveMutation = useMutation({
     mutationFn: async (form: DomainForm) => {
       const payload = toPayload(form);
-      if (form.id) {
-        return unwrap<Domain>(api.put(`/domains/${form.id}`, payload));
+      const domain = form.id
+        ? await unwrap<Domain>(api.put(`/domains/${form.id}`, payload))
+        : await unwrap<Domain>(api.post("/domains", payload));
+
+      let autoSSLError: string | null = null;
+      let autoSSLIssued = false;
+      if (form.sslAutoIssue && !domain.sslEnabled) {
+        try {
+          await unwrap(api.post("/ssl/issue", { domainId: domain.id }));
+          autoSSLIssued = true;
+        } catch (error) {
+          autoSSLError = getApiErrorMessage(error) ?? t("messages.requestFailed");
+        }
       }
-      return unwrap<Domain>(api.post("/domains", payload));
+
+      return { domain, autoSSLIssued, autoSSLError };
     },
-    onSuccess: () => {
+    onSuccess: ({ autoSSLIssued, autoSSLError }) => {
       toast.success(t("messages.saved"));
+      if (autoSSLIssued) {
+        toast.success(t("domains.autoSslIssued"));
+      }
+      if (autoSSLError) {
+        toast.error(t("domains.autoSslFailed", { error: autoSSLError }));
+      }
       setModalOpen(false);
       setEditing(emptyForm);
       void queryClient.invalidateQueries({ queryKey: ["domains"] });
@@ -112,6 +130,12 @@ export function DomainsPage() {
     mutationFn: (id: string) => unwrap(api.delete(`/domains/${id}`)),
     onSuccess: () => {
       toast.success(t("messages.deleted"));
+      void queryClient.invalidateQueries({ queryKey: ["domains"] });
+    },
+    onError: (error) => {
+      toast.error(getApiErrorMessage(error) ?? t("domains.deleteFailed"));
+    },
+    onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: ["domains"] });
     }
   });
@@ -285,6 +309,9 @@ export function DomainsPage() {
                 {label}
               </label>
             ))}
+          </div>
+          <div className="md:col-span-2 rounded-2xl border border-black/10 bg-neutral-50 px-4 py-3 text-sm text-slate-600 dark:border-white/10 dark:bg-neutral-900/70 dark:text-slate-300">
+            {t("domains.autoSslHint")}
           </div>
           <div className="md:col-span-2 flex justify-end gap-3">
             <Button type="button" variant="secondary" onClick={() => setModalOpen(false)}>
