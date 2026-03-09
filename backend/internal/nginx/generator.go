@@ -399,9 +399,12 @@ location = {{ .ChallengeRoute }} {
     proxy_set_header X-Original-Method $request_method;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header User-Agent $http_user_agent;
     proxy_set_header X-Challenge-Mode $shieldpanel_challenge;
     proxy_set_header X-Reason $shieldpanel_reason;
     proxy_set_header Accept-Language $http_accept_language;
+    proxy_set_header CF-Connecting-IP $http_cf_connecting_ip;
+    proxy_set_header CF-IPCountry $http_cf_ipcountry;
 }
 
 location = {{ .BlockRoute }} {
@@ -412,8 +415,11 @@ location = {{ .BlockRoute }} {
     proxy_set_header X-Original-Method $request_method;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header User-Agent $http_user_agent;
     proxy_set_header X-Reason $shieldpanel_reason;
     proxy_set_header Accept-Language $http_accept_language;
+    proxy_set_header CF-Connecting-IP $http_cf_connecting_ip;
+    proxy_set_header CF-IPCountry $http_cf_ipcountry;
 }
 {{- end }}
 `
